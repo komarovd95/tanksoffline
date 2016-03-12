@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field">
+    <class name="com.tanksoffline.data.core.ActiveRecord" abstract="true">
+        <id name="id" type="long" column="id">
+            <generator class="increment"/>
+        </id>
+        <property name="createdAt" column="created_at" type="timestamp"/>
+        <property name="updatedAt" column="updated_at" type="timestamp"/>
+
+        <union-subclass name="com.tanksoffline.data.users.User" table="USERS">
+            <property name="login" column="user_login" type="string" unique="true" length="20"/>
+            <property name="password" column="user_pass" type="string" length="50"/>
+            <property name="userType" column="user_type">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">com.tanksoffline.application.utils.UserType</param>
+                    <param name="useNamed">true</param>
+                </type>
+            </property>
+        </union-subclass>
+
+        <union-subclass name="com.tanksoffline.data.fields.Field" table="FIELDS">
+            <property name="name" column="field_name" type="string" unique="true" length="20" />
+            <property name="numberOfPlayers" column="num_players" type="int" />
+            <property name="fieldCells" column="field_blob" type="serializable" length="3000"/>
+            <many-to-one name="owner" class="com.tanksoffline.data.users.User" column="owner"
+                         not-null="true" />
+        </union-subclass>
+    </class>
+</hibernate-mapping>
