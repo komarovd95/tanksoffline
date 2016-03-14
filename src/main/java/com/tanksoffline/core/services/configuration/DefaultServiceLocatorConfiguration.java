@@ -3,6 +3,7 @@ package com.tanksoffline.core.services.configuration;
 import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.services.Service;
 import com.tanksoffline.core.services.ValidationService;
+import com.tanksoffline.core.utils.SingletonFactory;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class DefaultServiceLocatorConfiguration implements ServiceLocatorConfigu
     @Override
     public Map<Class<? extends Service>, Factory<? extends Service>> configureFactories() {
         Map<Class<? extends Service>, Factory<? extends Service>> factoryMap = new HashMap<>();
-        factoryMap.put(ValidationService.class, new Factory.SingletonFactory<>(ValidationService::new));
+        factoryMap.put(ValidationService.class, new SingletonFactory<>(ValidationService::new));
         return factoryMap;
     }
 }

@@ -7,6 +7,7 @@ import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
 import com.tanksoffline.core.services.ValidationService;
+import com.tanksoffline.core.utils.SingletonFactory;
 
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class ApplicationDIConfiguration implements DIService.DIConfiguration {
     @Override
     public Map<String, Factory<?>> configure() {
         configurationMap.put(UserModel.class.getName(),
-                new Factory.SingletonFactory<>(() -> (UserModel) Proxy.newProxyInstance(
+                new SingletonFactory<>(() -> (UserModel) Proxy.newProxyInstance(
                         UserModel.class.getClassLoader(),
                         new Class[] {UserModel.class},
                         ServiceLocator.getInstance().getService(ValidationService.class)
@@ -30,7 +31,7 @@ public class ApplicationDIConfiguration implements DIService.DIConfiguration {
                 ));
 
         configurationMap.put(ApplicationController.class.getName(),
-                new Factory.SingletonFactory<>(ApplicationController::new));
+                new SingletonFactory<>(ApplicationController::new));
 
 
         return configurationMap;

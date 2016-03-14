@@ -6,6 +6,7 @@ import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.Service;
 import com.tanksoffline.application.services.HibernateDataService;
 import com.tanksoffline.core.services.configuration.DefaultServiceLocatorConfiguration;
+import com.tanksoffline.core.utils.SingletonFactory;
 
 import java.util.Map;
 
@@ -14,10 +15,10 @@ public class ApplicationServiceLocatorConfiguration extends DefaultServiceLocato
     public Map<Class<? extends Service>, Factory<? extends Service>> configureFactories() {
         Map<Class<? extends Service>, Factory<? extends Service>> factoryMap = super.configureFactories();
         Factory<HibernateDataService> hibernateDataServiceFactory =
-                new Factory.SingletonFactory<>(HibernateDataService::new);
+                new SingletonFactory<>(HibernateDataService::new);
         factoryMap.put(DataService.class, hibernateDataServiceFactory);
         factoryMap.put(HibernateDataService.class, hibernateDataServiceFactory);
-        factoryMap.put(DIService.class, new Factory.SingletonFactory<>(
+        factoryMap.put(DIService.class, new SingletonFactory<>(
                 () -> new DIService(new ApplicationDIConfiguration())
         ));
         return factoryMap;
