@@ -1,10 +1,10 @@
 package persistence;
 
-import com.tanksoffline.data.users.User;
-import com.tanksoffline.services.ApplicationServiceLocatorConfiguration;
-import com.tanksoffline.services.HibernateDataService;
-import com.tanksoffline.services.core.DataService;
-import com.tanksoffline.services.core.ServiceLocator;
+import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
+import com.tanksoffline.application.services.HibernateDataService;
+import com.tanksoffline.core.services.DataService;
+import com.tanksoffline.core.services.ServiceLocator;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
 import org.junit.After;

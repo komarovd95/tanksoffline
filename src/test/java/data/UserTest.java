@@ -1,9 +1,9 @@
 package data;
 
 import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.data.users.User;
-import com.tanksoffline.services.core.DataService;
-import com.tanksoffline.services.core.ServiceLocator;
+import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.core.services.DataService;
+import com.tanksoffline.core.services.ServiceLocator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,49 +1,34 @@
 package services;
 
-import com.tanksoffline.application.utils.Factory;
-import com.tanksoffline.services.ApplicationServiceLocatorConfiguration;
-import com.tanksoffline.services.HibernateDataService;
-import com.tanksoffline.services.core.DataService;
-import com.tanksoffline.services.core.Service;
-import com.tanksoffline.services.core.ServiceLocatorConfiguration;
+import com.tanksoffline.core.utils.Factory;
+import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
+import com.tanksoffline.core.services.Service;
+import com.tanksoffline.core.services.configuration.ServiceLocatorConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 
 public class ServiceLocatorConfigurationTest {
     private ServiceLocatorConfiguration slc;
-    private Map<Class<?>, Service> expectedServiceMap;
-    private Map<Class<?>, Factory<? extends Service>> expectedFactoryMap;
 
     @Before
     public void setUp() {
         slc = new ApplicationServiceLocatorConfiguration();
-
-        expectedServiceMap = new HashMap<>();
-        expectedServiceMap.put(DataService.class, null);
-        expectedServiceMap.put(HibernateDataService.class, null);
-
-        expectedFactoryMap = new HashMap<>();
-
-        Factory<DataService> mockServiceFactory = () -> null;
-        expectedFactoryMap.put(DataService.class, mockServiceFactory);
-        expectedFactoryMap.put(HibernateDataService.class, mockServiceFactory);
     }
 
     @Test
     public void testConfigureServices() {
-        Map<Class<?>, Service> serviceMap = slc.configureServices();
-        assertEquals(expectedServiceMap, serviceMap);
+        Map<Class<? extends Service>, Service> serviceMap = slc.configureServices();
+        assertEquals(4, serviceMap.size());
     }
 
     @Test
     public void testConfigureFactories() {
-        Map<Class<?>, Factory<? extends Service>> factoryMap = slc.configureFactories();
-        assertEquals(expectedFactoryMap.keySet(), factoryMap.keySet());
+        Map<Class<? extends Service>, Factory<? extends Service>> factoryMap = slc.configureFactories();
+        assertEquals(4, factoryMap.size());
     }
 
 }

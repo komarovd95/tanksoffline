@@ -1,13 +1,13 @@
 package persistence;
 
 import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.data.fields.Field;
-import com.tanksoffline.data.fields.FieldCell;
-import com.tanksoffline.data.users.User;
-import com.tanksoffline.services.ApplicationServiceLocatorConfiguration;
-import com.tanksoffline.services.HibernateDataService;
-import com.tanksoffline.services.core.DataService;
-import com.tanksoffline.services.core.ServiceLocator;
+import com.tanksoffline.application.data.fields.Field;
+import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
+import com.tanksoffline.application.services.HibernateDataService;
+import com.tanksoffline.core.services.DataService;
+import com.tanksoffline.core.services.ServiceLocator;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
 import org.junit.After;
@@ -30,7 +30,7 @@ public class FieldPersistenceTest {
         user = new User("Dave", "pass123", UserType.MANAGER);
         dataService.save(user);
 
-        field = new Field(user, "Temple", 3, 2, 2);
+        field = new Field(user, "Temple", 3, 2);
         field.addCell(0, 0, new FieldCell(true, true, true, true));
         field.addCell(0, 1, new FieldCell(false, true, true, true, 1));
         field.addCell(1, 0, new FieldCell(true, false, true, true));

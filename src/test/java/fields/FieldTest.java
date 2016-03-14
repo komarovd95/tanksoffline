@@ -1,11 +1,11 @@
 package fields;
 
 import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.data.fields.Field;
-import com.tanksoffline.data.fields.FieldCell;
-import com.tanksoffline.data.users.User;
-import com.tanksoffline.services.core.DataService;
-import com.tanksoffline.services.core.ServiceLocator;
+import com.tanksoffline.application.data.fields.Field;
+import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.core.services.DataService;
+import com.tanksoffline.core.services.ServiceLocator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class FieldTest {
         PowerMockito.when(serviceLocatorMock.getService(DataService.class)).thenReturn(null);
         PowerMockito.when(ServiceLocator.getInstance()).thenReturn(serviceLocatorMock);
 
-        field = new Field(new User("Dave", "pass123", UserType.MANAGER), "Temple", 3, 2, 2);
+        field = new Field(new User("Dave", "pass123", UserType.MANAGER), "Temple", 3, 2);
         field.addCell(0, 0, new FieldCell(true, true, true, true));
         field.addCell(0, 1, new FieldCell(false, true, true, true, 1));
         field.addCell(1, 0, new FieldCell(true, false, true, true));

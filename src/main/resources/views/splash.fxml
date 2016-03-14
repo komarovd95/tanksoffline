@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: gold;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="400.0" fitWidth="461.0" layoutX="84.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/tank.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="339.0" layoutY="50.0" text="TanksOffline" textFill="#c62525">
+         <font>
+            <Font name="Droid Sans Bold" size="40.0" />
+         </font>
+      </Label>
+      <Label layoutX="14.0" layoutY="379.0" text="Loading...">
+         <font>
+            <Font name="DejaVu Sans Condensed Bold" size="13.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
