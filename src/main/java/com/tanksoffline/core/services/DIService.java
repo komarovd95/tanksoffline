@@ -1,5 +1,6 @@
 package com.tanksoffline.core.services;
 
+import com.tanksoffline.core.services.configuration.DIConfiguration;
 import com.tanksoffline.core.utils.Factory;
 
 import java.util.Map;
@@ -29,8 +30,4 @@ public class DIService implements Service {
     @Override
     public void shutdown() {}
 
-    @FunctionalInterface
-    public interface DIConfiguration {
-        Map<String, Factory<?>> configure();
-    }
 }

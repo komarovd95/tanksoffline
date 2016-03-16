@@ -1,7 +1,6 @@
 package com.tanksoffline.application.controllers;
 
 import com.tanksoffline.application.App;
-import com.tanksoffline.application.models.core.UserModel;
 import com.tanksoffline.application.tasks.ServiceLoader;
 import com.tanksoffline.application.views.LoginView;
 import com.tanksoffline.application.views.SplashView;
@@ -14,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class ApplicationController {
-    private UserModel userModel;
 
     public ApplicationController() {
         ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
@@ -51,9 +49,5 @@ public class ApplicationController {
         loginStage.show();
         loginStage.setResizable(false);
         App.setOnCenter(loginStage);
-    }
-
-    public UserModel getUserModel() {
-        return userModel;
     }
 }

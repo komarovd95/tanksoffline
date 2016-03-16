@@ -120,22 +120,4 @@ public class Field extends ActiveRecord {
     public String toString() {
         return String.format("[%s] Size: (%d, %d)", name, getWidth(), getHeight());
     }
-
-//    public String displayAscii() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(toString()).append("\r\n\r\n ");
-//        for (FieldCell[] ignored : fieldCells) {
-//            sb.append("_ ");
-//        }
-//        sb.append(" \r\n");
-//        for (int j = 0; j < getHeight(); j++) {
-//            sb.append("|");
-//            for (int i = 0; i < getWidth(); i++) {
-//                sb.append(fieldCells[i][j].hasBorder(Direction.BOTTOM) ? "_" : " ")
-//                        .append(fieldCells[i][j].hasBorder(Direction.RIGHT) ? "|" : " ");
-//            }
-//            sb.append("\r\n");
-//        }
-//        return sb.toString();
-//    }
 }

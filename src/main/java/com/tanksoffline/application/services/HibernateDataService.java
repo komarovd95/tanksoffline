@@ -7,9 +7,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 public class HibernateDataService implements DataService {
     private SessionFactory sessionFactory;
@@ -18,30 +18,30 @@ public class HibernateDataService implements DataService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T save(T item) {
-        return UnitOfWork.doWork(session, () -> (T) session.save(item));
+        return (T) session.save(item);
     }
 
     @Override
     public <T> T remove(T item) {
-        UnitOfWork.doWork(session, () -> session.delete(item));
+        session.delete(item);
         return item;
     }
 
     @Override
     public <T> T update(T item) {
-        UnitOfWork.doWork(session, () -> session.update(item));
+        session.update(item);
         return item;
     }
 
     @Override
     public <T> T refresh(T item) {
-        UnitOfWork.doWork(session, () -> session.refresh(item));
+        session.refresh(item);
         return item;
     }
 
     @Override
     public <T> T find(Class<T> itemClass, Object id) {
-        return UnitOfWork.doWork(session, () -> session.get(itemClass, (Serializable) id));
+        return session.get(itemClass, (Serializable) id);
     }
 
     @Override
@@ -84,40 +84,39 @@ public class HibernateDataService implements DataService {
     @Override
     public void start() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
-        session = sessionFactory.openSession();
     }
 
     @Override
     public void shutdown() {
-        session.close();
         sessionFactory.close();
     }
 
+    public static InvocationHandler createTransactionHandler(HibernateDataService hds) {
+        return (proxy, method, args) -> {
+            if (args == null) args = new Object[0];
 
-
-
-    static class UnitOfWork {
-        static void doWork(Session session, Runnable work) {
-            doWork(session, () -> {
-                work.run();
-                return null;
-            });
-        }
-
-        static <T> T doWork(Session session, Callable<T> work) {
-            Transaction tx = null;
-            T item;
-            try {
-                tx = session.beginTransaction();
-                item = work.call();
-                tx.commit();
-            } catch (Exception e) {
-                if (tx != null) {
-                    tx.rollback();
+            String name = method.getName();
+            if (!name.equals("start") && !name.equals("shutdown") && !name.equals("restart")) {
+                Transaction tx = null;
+                Object result;
+                try {
+                    hds.session = hds.sessionFactory.openSession();
+                    tx = hds.session.beginTransaction();
+                    result = method.invoke(hds, args);
+                    tx.commit();
+                } catch (Exception e) {
+                    if (tx != null) {
+                        tx.rollback();
+                    }
+                    throw new RuntimeException(e);
+                } finally {
+                    hds.session.close();
                 }
-                throw new RuntimeException(e);
+
+                return result;
+            } else {
+                return method.invoke(hds, args);
             }
-            return item;
-        }
+        };
     }
 }

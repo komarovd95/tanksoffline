@@ -5,11 +5,11 @@ import com.tanksoffline.application.utils.UserType;
 import com.tanksoffline.application.data.users.User;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
+import com.tanksoffline.core.utils.validation.Login;
+import com.tanksoffline.core.utils.validation.Password;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 public class UserModelImpl implements UserModel {
@@ -22,12 +22,7 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void login(@NotNull(message = "Логин не может быть пустым")
-                      @Size(min = 4, max = 20, message = "Длина логина должна быть в пределах от {min} до {max}")
-                      String login,
-                      @NotNull(message = "Пароль не может быть пустым")
-                      @Size(min = 6, max = 20, message = "Длина пароля должна быть в пределах от {min} до {max}")
-                      String password) {
+    public void login(@Login String login, @Password String password) {
         List<User> userList = dataService.where(User.class, "login", login);
         if (userList.size() == 1) {
             User user = userList.get(0);
@@ -37,18 +32,12 @@ public class UserModelImpl implements UserModel {
                 throw new IllegalArgumentException("Password is incorrect");
             }
         } else {
-            throw new IllegalArgumentException("Login is incorrect");
+            throw new IllegalStateException("Login is incorrect");
         }
     }
 
     @Override
-    public void register(@NotNull(message = "Логин не может быть пустым")
-                         @Size(min = 4, max = 20, message = "Длина логина должна быть в пределах от {min} до {max}")
-                         String login,
-                         @NotNull(message = "Пароль не может быть пустым")
-                         @Size(min = 6, max = 20, message = "Длина пароля должна быть в пределах от {min} до {max}")
-                         String password,
-                         boolean asManager) {
+    public void register(@Login String login, @Password String password, boolean asManager) {
         User user = new User(login, password, (asManager) ? UserType.MANAGER : UserType.USER);
         dataService.save(user);
         loggedUser.set(user);

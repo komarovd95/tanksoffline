@@ -1,19 +1,19 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
 import com.tanksoffline.application.controllers.UserActionController;
 import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.core.services.ServiceLocator;
+import com.tanksoffline.core.services.ValidationService;
 import javafx.concurrent.Service;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import org.hibernate.exception.ConstraintViolationException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.validation.ValidationException;
+import java.util.Map;
 
 public class LoginViewController {
     private UserActionController actionController;
@@ -49,11 +49,26 @@ public class LoginViewController {
         Service<User> loginService = actionController.onLogin(loginValue.getText(), passValue.getText());
         loginService.setOnFailed(event -> {
             Throwable t = loginService.exceptionProperty().get();
-            loginLabel.setText(t.getMessage());
-            loginLabel.setTextFill(Color.rgb(230, 40, 40));
+            ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
+            if (t instanceof ValidationException) {
+                fireError();
+            } else if (t instanceof IllegalStateException) {
+                setError(loginLabel, service.getErrorMessage("incorrect_login"));
+            } else if (t instanceof IllegalArgumentException) {
+                setError(passLabel, service.getErrorMessage("incorrect_pass"));
+            } else {
+                throw new RuntimeException(t);
+            }
         });
-        loginService.setOnSucceeded(event -> System.out.println("User logged in " +
-                loginService.getValue().getLogin()));
+        loginService.setOnSucceeded(event -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Logged in");
+            alert.setHeaderText(null);
+            alert.initModality(Modality.WINDOW_MODAL);
+            alert.setContentText("Добро пожаловать " + loginService.getValue().getLogin());
+
+            alert.showAndWait();
+        });
         loginService.start();
     }
 
@@ -62,12 +77,44 @@ public class LoginViewController {
                 passValue.getText(), asManager.isSelected());
         registerService.setOnFailed(event -> {
             Throwable t = registerService.exceptionProperty().get();
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, t.getMessage(), t);
-            loginLabel.setText(t.getMessage());
-            loginLabel.setTextFill(Color.rgb(230, 40, 40));
+            ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
+            if (t instanceof ValidationException) {
+                fireError();
+            } else if (t.getCause() instanceof ConstraintViolationException) {
+                setError(loginLabel, service.getErrorMessage("login_exist"));
+            } else {
+                throw new RuntimeException(t);
+            }
         });
-        registerService.setOnSucceeded(event -> System.out.println("User successfully registered " +
-                registerService.getValue().getLogin()));
+        registerService.setOnSucceeded(event -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Registered");
+            alert.setHeaderText(null);
+            alert.initModality(Modality.WINDOW_MODAL);
+            alert.setContentText("Вы успешно зарегистрировались под именем " + registerService.getValue().getLogin());
+
+            alert.showAndWait();
+        });
         registerService.start();
+    }
+
+    private void fireError() {
+        ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
+        Map<String, String> errors = service.getErrorClasses();
+
+        String message = errors.get("Login");
+        if (message != null) {
+            setError(loginLabel, message);
+        }
+
+        message = errors.get("Password");
+        if (message != null) {
+            setError(passLabel, message);
+        }
+    }
+
+    private void setError(Label label, String message) {
+        label.setText(message);
+        label.setTextFill(Color.rgb(230, 40, 40));
     }
 }

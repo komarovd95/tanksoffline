@@ -10,17 +10,10 @@ public class ServiceLocator {
     private static ServiceLocator locator;
     private static ServiceLocatorConfiguration configuration;
 
-    private Map<Class<? extends Service>, Service> serviceMap;
-    private Map<Class<? extends Service>, Factory<? extends Service>> factoryMap;
-
-    private ServiceLocator() {
-        serviceMap = configuration.configureServices();
-        factoryMap = configuration.configureFactories();
-    }
-
     public static synchronized void bind(ServiceLocatorConfiguration configuration) {
         ServiceLocator.configuration = configuration;
         locator = null;
+        getInstance();
     }
 
     public static ServiceLocator getInstance() {
@@ -34,6 +27,14 @@ public class ServiceLocator {
             }
         }
         return localInstance;
+    }
+
+    private Map<Class<? extends Service>, Service> serviceMap;
+    private Map<Class<? extends Service>, Factory<? extends Service>> factoryMap;
+
+    private ServiceLocator() {
+        serviceMap = configuration.configureServices();
+        factoryMap = configuration.configureFactories();
     }
 
     @SuppressWarnings("unchecked")
