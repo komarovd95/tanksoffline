@@ -2,13 +2,13 @@ package com.tanksoffline.application.controllers;
 
 import com.tanksoffline.application.App;
 import com.tanksoffline.application.tasks.ServiceLoader;
-import com.tanksoffline.application.views.LoginView;
 import com.tanksoffline.application.views.SplashView;
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
 import com.tanksoffline.core.services.ValidationService;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -45,7 +45,7 @@ public class ApplicationController {
         loginStage.setTitle("TanksOffline");
 
         Parent loginRoot = new App.ResourceFactory("/views/login.fxml").createItem();
-        loginStage.setScene(new LoginView(loginRoot));
+        loginStage.setScene(new Scene(loginRoot));
         loginStage.show();
         loginStage.setResizable(false);
         App.setOnCenter(loginStage);

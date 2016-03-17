@@ -22,8 +22,6 @@ public class App extends Application {
     private Stage currentStage;
     private ApplicationController applicationController;
 
-    private UserModel userModel;
-
     public static class ResourceFactory implements Factory<Parent> {
         private String resourceUrl;
 

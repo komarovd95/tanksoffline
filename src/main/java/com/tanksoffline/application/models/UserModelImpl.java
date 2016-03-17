@@ -39,7 +39,7 @@ public class UserModelImpl implements UserModel {
     @Override
     public void register(@Login String login, @Password String password, boolean asManager) {
         User user = new User(login, password, (asManager) ? UserType.MANAGER : UserType.USER);
-        dataService.save(user);
+        user.save();
         loggedUser.set(user);
     }
 
