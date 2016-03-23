@@ -24,7 +24,8 @@ public class ApplicationController {
     public ApplicationController() {
         stageStack = new Stack<>();
         closeHandler = event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to format your system?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Вы уверены, что хотите покинуть игру?");
+            alert.setHeaderText("Выход");
             alert.showAndWait()
                     .filter(response -> response == ButtonType.OK)
                     .ifPresent(response -> Platform.exit());
@@ -55,7 +56,6 @@ public class ApplicationController {
 
     public void onLoad() throws Exception {
         Stage loginStage = new Stage();
-        loginStage.initStyle(StageStyle.UTILITY);
         loginStage.setTitle("TanksOffline");
 
         Parent loginRoot = new App.ResourceFactory("/views/login.fxml").create();
@@ -63,6 +63,7 @@ public class ApplicationController {
         loginStage.setOnCloseRequest(closeHandler);
         loginStage.show();
         loginStage.setResizable(false);
+        loginStage.setMaximized(false);
 
         App.getInstance().getUserModel().getLoggedUserProperty()
                 .addObserver((observable, oldValue, newValue) ->

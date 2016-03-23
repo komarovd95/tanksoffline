@@ -121,7 +121,7 @@ public class UsersViewController implements Initializable {
         sortedList.comparatorProperty().bind(table.comparatorProperty());
 
         table.setItems(sortedList);
-
+        table.setPlaceholder(new Label("Нет данных"));
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             boolean willDisabled = newValue == null;
             updateBtn.setDisable(willDisabled);

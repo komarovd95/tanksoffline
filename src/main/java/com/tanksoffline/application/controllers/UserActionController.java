@@ -51,7 +51,6 @@ public class UserActionController {
 
     public Callable<User> onUpdate(User user, String password, boolean isManager) {
         return () -> {
-            System.out.println(user.getLogin() + " " + password + " " + isManager);
             if (password != null) {
                 userModel.updatePassword(user, password);
             }
