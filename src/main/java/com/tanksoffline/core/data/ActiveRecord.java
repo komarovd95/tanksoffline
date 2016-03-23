@@ -3,7 +3,6 @@ package com.tanksoffline.core.data;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -30,13 +29,11 @@ public abstract class ActiveRecord implements Serializable {
         return (Date) updatedAt.clone();
     }
 
-    @PrePersist
-    public void preConstruct() {
+    void preConstruct() {
         createdAt = updatedAt = new Date();
     }
 
-    @PreUpdate
-    public void preUpdate() {
+    void preUpdate() {
         updatedAt = new Date();
     }
 

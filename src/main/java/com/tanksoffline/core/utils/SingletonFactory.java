@@ -9,10 +9,10 @@ public class SingletonFactory<T> implements Factory<T> {
     }
 
     @Override
-    public T createItem() {
+    public T create() {
         synchronized (this) {
             if (instance == null) {
-                instance = localFactory.createItem();
+                instance = localFactory.create();
             }
         }
         return instance;

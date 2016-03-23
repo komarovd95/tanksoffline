@@ -1,16 +1,62 @@
 package com.tanksoffline.application.controllers;
 
-import com.tanksoffline.application.tasks.LoginService;
-import com.tanksoffline.application.tasks.RegisterService;
+import com.tanksoffline.application.models.core.UserModel;
 import com.tanksoffline.application.data.users.User;
-import javafx.concurrent.Service;
+import com.tanksoffline.core.services.DIService;
+import com.tanksoffline.core.services.ServiceLocator;
+
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class UserActionController {
-    public Service<User> onLogin(String login, String password) {
-        return new LoginService(login, password);
+    private UserModel userModel;
+
+    public UserActionController() {
+        userModel = ServiceLocator.getInstance().getService(DIService.class)
+                .getComponent(UserModel.class);
     }
-    public Service<User> onSignUp(String login, String password, boolean asManager) {
-        return new RegisterService(login, password, asManager);
+
+    public Callable<User> onLogin(String login, String password) {
+        return () -> {
+            userModel.login(login, password);
+            return userModel.getLoggedUser();
+        };
     }
-    public void onLogout() {}
+
+    public Callable<User> onSignUp(String login, String password, boolean asManager) {
+        return () -> {
+            userModel.register(login, password, asManager);
+            return userModel.getLoggedUser();
+        };
+    }
+
+    public Callable<List<User>> onFindAll() {
+        return () -> userModel.findAll();
+    }
+
+    public Callable<User> onLogout() {
+        return () -> {
+            User loggedUser = userModel.getLoggedUser();
+            userModel.logout();
+            return loggedUser;
+        };
+    }
+
+    public Callable<User> onRemove(User user) {
+        return () -> {
+            userModel.remove(user);
+            return null;
+        };
+    }
+
+    public Callable<User> onUpdate(User user, String password, boolean isManager) {
+        return () -> {
+            System.out.println(user.getLogin() + " " + password + " " + isManager);
+            if (password != null) {
+                userModel.updatePassword(user, password);
+            }
+            userModel.updateUserType(user, isManager);
+            return user;
+        };
+    }
 }

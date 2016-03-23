@@ -51,7 +51,7 @@ public class ServiceLocator {
                 if (factory == null) {
                     throw new RuntimeException("Can't create a service " + serviceClass.getSimpleName());
                 } else {
-                    service = factory.createItem();
+                    service = factory.create();
                     serviceMap.put(serviceClass, service);
                 }
             }

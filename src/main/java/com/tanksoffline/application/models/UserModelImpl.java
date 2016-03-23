@@ -5,19 +5,19 @@ import com.tanksoffline.application.utils.UserType;
 import com.tanksoffline.application.data.users.User;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
+import com.tanksoffline.core.utils.obs.Observable;
+import com.tanksoffline.core.utils.obs.SimpleObservable;
 import com.tanksoffline.core.utils.validation.Login;
 import com.tanksoffline.core.utils.validation.Password;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.List;
 
 public class UserModelImpl implements UserModel {
     private final DataService dataService;
-    private ObjectProperty<User> loggedUser;
+    private Observable<User> loggedUser;
 
     public UserModelImpl() {
-        loggedUser = new SimpleObjectProperty<>();
+        loggedUser = new SimpleObservable<>();
         dataService = ServiceLocator.getInstance().getService(DataService.class);
     }
 
@@ -44,7 +44,41 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public ObjectProperty<User> getLoggedUserProperty() {
+    public void logout() {
+        loggedUser.get().update();
+        loggedUser.set(null);
+    }
+
+    @Override
+    public void remove(User user) {
+        user.remove();
+    }
+
+    @Override
+    public void updatePassword(User user, @Password String password) {
+        user.setPassword(password);
+        user.update();
+    }
+
+    @Override
+    public void updateUserType(User user, boolean asManager) {
+        System.out.println(asManager);
+        if (asManager) user.setUserType(loggedUser.get(), UserType.MANAGER);
+        user.update();
+    }
+
+    @Override
+    public User getLoggedUser() {
+        return loggedUser.get();
+    }
+
+    @Override
+    public Observable<User> getLoggedUserProperty() {
         return loggedUser;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return dataService.findAll(User.class);
     }
 }

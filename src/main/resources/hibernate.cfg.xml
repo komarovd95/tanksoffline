@@ -12,5 +12,11 @@
         <!--<property name="connection.autocommit">false</property>!-->
         <property name="hbm2ddl.auto">create-drop</property>
         <mapping resource="DatabaseMapping.hbm.xml"/>
+        <event type="save">
+            <listener class="com.tanksoffline.core.data.SaveListener" />
+        </event>
+        <event type="update">
+            <listener class="com.tanksoffline.core.data.UpdateListener" />
+        </event>
     </session-factory>
 </hibernate-configuration>

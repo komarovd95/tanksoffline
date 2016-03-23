@@ -82,6 +82,12 @@ public class HibernateDataService implements DataService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T> List<T> findAll(Class<T> itemClass) {
+        return session.createCriteria(itemClass).list();
+    }
+
+    @Override
     public void start() {
         sessionFactory = new Configuration().configure().buildSessionFactory();
     }

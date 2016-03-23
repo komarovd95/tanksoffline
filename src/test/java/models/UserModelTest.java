@@ -7,7 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.crypto.ExemptionMechanismException;
 import javax.validation.ValidationException;
 
 public class UserModelTest {

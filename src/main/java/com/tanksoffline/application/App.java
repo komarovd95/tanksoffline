@@ -1,7 +1,9 @@
 package com.tanksoffline.application;
 
+import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.application.controllers.ApplicationController;
 import com.tanksoffline.application.models.core.UserModel;
+import com.tanksoffline.core.services.Service;
 import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
@@ -18,9 +20,8 @@ import java.util.logging.Logger;
 
 public class App extends Application {
     private static final Logger logger = Logger.getLogger(App.class.getName());
+
     private static App instance;
-    private Stage currentStage;
-    private ApplicationController applicationController;
 
     public static class ResourceFactory implements Factory<Parent> {
         private String resourceUrl;
@@ -30,7 +31,7 @@ public class App extends Application {
         }
 
         @Override
-        public Parent createItem() {
+        public Parent create() {
             try {
                 return FXMLLoader.load(App.class.getResource(resourceUrl));
             } catch (Exception e) {
@@ -38,12 +39,6 @@ public class App extends Application {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public App() {
-        instance = this;
-        applicationController = new ApplicationController();
-        //userModel = new UserModel();
     }
 
     public static App getInstance() {
@@ -56,38 +51,59 @@ public class App extends Application {
         stage.setY((bounds.getHeight() - stage.getHeight()) / 2);
     }
 
+    public static <T> T getComponent(Class<T> c) {
+        return ServiceLocator.getInstance().getService(DIService.class)
+                .getComponent(c);
+    }
 
-    public static void main(String[] args) {
-        try {
-            launch(args);
-        } catch (Throwable t) {
-            System.out.println(t.getMessage());
-        }
+    public static <T extends Service> T getService(Class<T> c) {
+        return ServiceLocator.getInstance().getService(c);
+    }
+
+    private Stage primaryStage;
+    private ApplicationController applicationController;
+
+    public App() {
+        applicationController = ServiceLocator.getInstance().getService(DIService.class)
+                .getComponent(ApplicationController.class);
+        instance = this;
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        currentStage = primaryStage;
+        this.primaryStage = primaryStage;
         applicationController.onStart();
     }
 
     public Parent replaceStageContent(Parent page, Factory<Scene> sceneFactory) throws Exception {
-        Scene scene = currentStage.getScene();
+        Scene scene = primaryStage.getScene();
         if (scene == null) {
-            scene = sceneFactory.createItem();
-            currentStage.setScene(scene);
+            primaryStage.setScene(sceneFactory.create());
         } else {
-            currentStage.getScene().setRoot(page);
+            primaryStage.getScene().setRoot(page);
         }
-        currentStage.sizeToScene();
+        primaryStage.sizeToScene();
         return page;
     }
 
-    public Stage getCurrentStage() {
-        return currentStage;
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
 
     public UserModel getUserModel() {
         return ServiceLocator.getInstance().getService(DIService.class).getComponent(UserModel.class);
+    }
+
+    public ApplicationController getApplicationController() {
+        return applicationController;
+    }
+
+    public static void main(String[] args) {
+        try {
+            ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
+            launch(args);
+        } catch (Throwable t) {
+            System.out.println(t.getMessage());
+        }
     }
 }

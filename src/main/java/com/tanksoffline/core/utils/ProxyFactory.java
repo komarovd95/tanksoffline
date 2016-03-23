@@ -18,7 +18,7 @@ public class ProxyFactory<T> implements Factory<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T createItem() {
+    public T create() {
         List<Class<?>> interfaces = getAllInterfaces(instanceClass);
         return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
                 interfaces.toArray(new Class[interfaces.size()]), handler);

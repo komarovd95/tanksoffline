@@ -1,22 +1,39 @@
 package com.tanksoffline.application.views.controllers;
 
+import com.tanksoffline.application.controllers.ApplicationController;
 import com.tanksoffline.application.controllers.UserActionController;
 import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.utils.TaskFactory;
+import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
 import com.tanksoffline.core.services.ValidationService;
+import com.tanksoffline.core.utils.Factory;
+import com.tanksoffline.core.utils.SingletonFactory;
 import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.validation.ValidationException;
+import java.net.URL;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-public class LoginViewController {
+public class LoginViewController implements Initializable {
     private UserActionController actionController;
+    private Factory<Service<User>> loginServiceFactory;
+    private Factory<Service<User>> registerServiceFactory;
+
+    @FXML
+    private Button loginBtn;
+
+    @FXML
+    private Button registerBtn;
 
     @FXML
     private Label loginLabel;
@@ -33,8 +50,107 @@ public class LoginViewController {
     @FXML
     private CheckBox asManager;
 
+    @FXML
+    private ProgressIndicator progress;
+
     public LoginViewController() {
         this.actionController = new UserActionController();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Runnable succeed = () -> {
+            loginValue.setText("");
+            loginLabel.setText("Ваш логин");
+            loginLabel.setTextFill(Color.BLACK);
+
+            passValue.setText("");
+            passLabel.setText("Ваш пароль");
+            passLabel.setTextFill(Color.BLACK);
+
+            asManager.setSelected(false);
+
+            brokeInterface(false);
+        };
+
+        loginServiceFactory = new SingletonFactory<>(() ->
+                new Service<User>() {
+                    @Override
+                    protected Task<User> createTask() {
+                        return new TaskFactory<>(
+                                actionController.onLogin(loginValue.getText().trim(), passValue.getText().trim()))
+                                .create();
+                    }
+
+                    @Override
+                    protected void failed() {
+                        super.failed();
+                        Throwable t = this.exceptionProperty().get();
+                        ValidationService service = ServiceLocator.getInstance()
+                                .getService(ValidationService.class);
+                        if (t instanceof ValidationException) {
+                            fireError();
+                        } else if (t instanceof IllegalStateException) {
+                            setError(loginLabel, service.getErrorMessage("incorrect_login"));
+                        } else if (t instanceof IllegalArgumentException) {
+                            setError(passLabel, service.getErrorMessage("incorrect_pass"));
+                        } else {
+                            throw new RuntimeException(t);
+                        }
+                        brokeInterface(false);
+                    }
+
+                    @Override
+                    protected void running() {
+                        super.running();
+                        brokeInterface(true);
+                    }
+
+                    @Override
+                    protected void succeeded() {
+                        super.succeeded();
+                        succeed.run();
+                    }
+                }
+        );
+
+        registerServiceFactory = new SingletonFactory<>(() ->
+                new Service<User>() {
+                    @Override
+                    protected Task<User> createTask() {
+                        return new TaskFactory<>(actionController.onSignUp(loginValue.getText().trim(),
+                                passValue.getText().trim(), asManager.isSelected())).create();
+                    }
+
+                    @Override
+                    protected void failed() {
+                        super.failed();
+                        Throwable t = this.exceptionProperty().get();
+                        ValidationService service = ServiceLocator.getInstance()
+                                .getService(ValidationService.class);
+                        if (t instanceof ValidationException) {
+                            fireError();
+                        } else if (t.getCause() instanceof ConstraintViolationException) {
+                            setError(loginLabel, service.getErrorMessage("login_exist"));
+                        } else {
+                            throw new RuntimeException(t);
+                        }
+                        brokeInterface(false);
+                    }
+
+                    @Override
+                    protected void running() {
+                        super.running();
+                        brokeInterface(true);
+                    }
+
+                    @Override
+                    protected void succeeded() {
+                        super.succeeded();
+                        succeed.run();
+                    }
+                }
+        );
     }
 
     public void changeField(KeyEvent event) {
@@ -46,56 +162,21 @@ public class LoginViewController {
     }
 
     public void onLogin() {
-        Service<User> loginService = actionController.onLogin(loginValue.getText(), passValue.getText());
-        loginService.setOnFailed(event -> {
-            Throwable t = loginService.exceptionProperty().get();
-            ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
-            if (t instanceof ValidationException) {
-                fireError();
-            } else if (t instanceof IllegalStateException) {
-                setError(loginLabel, service.getErrorMessage("incorrect_login"));
-            } else if (t instanceof IllegalArgumentException) {
-                setError(passLabel, service.getErrorMessage("incorrect_pass"));
-            } else {
-                throw new RuntimeException(t);
-            }
-        });
-        loginService.setOnSucceeded(event -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Logged in");
-            alert.setHeaderText(null);
-            alert.initModality(Modality.WINDOW_MODAL);
-            alert.setContentText("Добро пожаловать " + loginService.getValue().getLogin());
-
-            alert.showAndWait();
-        });
-        loginService.start();
+        Service<User> loginService = loginServiceFactory.create();
+        if (loginService.getState() == Worker.State.READY) {
+            loginService.start();
+        } else {
+            loginService.restart();
+        }
     }
 
     public void onSignUp() {
-        Service<User> registerService = actionController.onSignUp(loginValue.getText(),
-                passValue.getText(), asManager.isSelected());
-        registerService.setOnFailed(event -> {
-            Throwable t = registerService.exceptionProperty().get();
-            ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
-            if (t instanceof ValidationException) {
-                fireError();
-            } else if (t.getCause() instanceof ConstraintViolationException) {
-                setError(loginLabel, service.getErrorMessage("login_exist"));
-            } else {
-                throw new RuntimeException(t);
-            }
-        });
-        registerService.setOnSucceeded(event -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Registered");
-            alert.setHeaderText(null);
-            alert.initModality(Modality.WINDOW_MODAL);
-            alert.setContentText("Вы успешно зарегистрировались под именем " + registerService.getValue().getLogin());
-
-            alert.showAndWait();
-        });
-        registerService.start();
+        Service<User> registerService = registerServiceFactory.create();
+        if (registerService.getState() == Worker.State.READY) {
+            registerService.start();
+        } else {
+            registerService.restart();
+        }
     }
 
     private void fireError() {
@@ -116,5 +197,19 @@ public class LoginViewController {
     private void setError(Label label, String message) {
         label.setText(message);
         label.setTextFill(Color.rgb(230, 40, 40));
+        ServiceLocator.getInstance().getService(DIService.class)
+                .getComponent(ApplicationController.class)
+                .getCurrentStage().sizeToScene();
+    }
+
+    private void brokeInterface(boolean isBroken) {
+        loginValue.setEditable(!isBroken);
+        passValue.setEditable(!isBroken);
+        asManager.setDisable(isBroken);
+
+        loginBtn.setDisable(isBroken);
+        registerBtn.setDisable(isBroken);
+
+        progress.setVisible(isBroken);
     }
 }

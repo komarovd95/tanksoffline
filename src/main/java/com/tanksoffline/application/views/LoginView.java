@@ -7,10 +7,5 @@ import javafx.scene.Scene;
 public class LoginView extends Scene {
     public LoginView(@NamedArg("root") Parent root) {
         super(root);
-        initialize();
-    }
-
-    private void initialize() {
-
     }
 }

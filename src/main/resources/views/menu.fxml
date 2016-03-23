@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.tanksoffline.application.views.controllers.MenuViewController">
+   <children>
+      <VBox layoutY="2.0">
+         <children>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="Начать игру">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="Пользователи" fx:id="usersBtn" onAction="#onUsersClick">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="Карты">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="Матчи">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="О программе">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="Выйти" onAction="#onLogoutClick">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" prefWidth="160.0" text="Закрыть" onAction="#onClose">
+               <VBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

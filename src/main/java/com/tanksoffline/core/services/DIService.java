@@ -21,7 +21,7 @@ public class DIService implements Service {
         if (!components.containsKey(componentName)) {
             throw new IllegalArgumentException("Cannot look up component with name " + componentName);
         }
-        return (T) components.get(componentName).createItem();
+        return (T) components.get(componentName).create();
     }
 
     @Override

@@ -14,4 +14,6 @@ public interface DataService extends Service {
     <T> List<T> where(Class<T> itemClass, Map<String, Object> params);
     <T> List<T> where(Class<T> itemClass, String paramName, Object paramValue);
     <T> List<T> where(String query, Object... params);
+
+    <T> List<T> findAll(Class<T> itemClass);
 }

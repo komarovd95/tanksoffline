@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane fx:controller="com.tanksoffline.application.views.controllers.LoginViewController"
-            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tanksoffline.application.views.controllers.LoginViewController">
    <children>
       <VBox prefWidth="400.0">
          <children>
@@ -23,8 +22,8 @@
             </Label>
             <VBox prefWidth="100.0">
                <children>
-                  <Label text="Ваш логин" fx:id="loginLabel"/>
-                  <TextField fx:id="loginValue" onKeyTyped="#changeField"/>
+                  <Label fx:id="loginLabel" text="Ваш логин" />
+                  <TextField fx:id="loginValue" onKeyTyped="#changeField" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" top="20.0" />
@@ -35,26 +34,26 @@
             </VBox>
             <VBox prefWidth="100.0">
                <children>
-                  <Label text="Ваш пароль" fx:id="passLabel" />
-                  <PasswordField fx:id="passValue" onKeyTyped="#changeField"/>
+                  <Label fx:id="passLabel" text="Ваш пароль" />
+                  <PasswordField fx:id="passValue" onKeyTyped="#changeField" />
                </children>
                <padding>
                   <Insets left="20.0" right="20.0" />
                </padding>
             </VBox>
-            <CheckBox mnemonicParsing="false" text="Как администратор" fx:id="asManager">
+            <CheckBox fx:id="asManager" mnemonicParsing="false" text="Как администратор">
                <VBox.margin>
                   <Insets left="20.0" top="10.0" />
                </VBox.margin>
             </CheckBox>
             <HBox prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" prefWidth="160.0" text="Регистрация" onAction="#onSignUp">
+                  <Button fx:id="registerBtn" mnemonicParsing="false" onAction="#onSignUp" prefWidth="160.0" text="Регистрация">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="Вход" onAction="#onLogin">
+                  <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#onLogin" prefHeight="25.0" prefWidth="160.0" text="Вход">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -66,5 +65,16 @@
             </HBox>
          </children>
       </VBox>
+      <ProgressIndicator fx:id="progress" prefHeight="200.0" prefWidth="300.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor>
+         <padding>
+            <Insets bottom="50.0" />
+         </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </ProgressIndicator>
    </children>
 </AnchorPane>
