@@ -62,8 +62,7 @@ public class UserModelImpl implements UserModel {
 
     @Override
     public void updateUserType(User user, boolean asManager) {
-        System.out.println(asManager);
-        if (asManager) user.setUserType(loggedUser.get(), UserType.MANAGER);
+        user.setUserType(loggedUser.get(), (asManager) ? UserType.MANAGER : UserType.USER);
         user.update();
     }
 

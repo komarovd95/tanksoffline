@@ -161,8 +161,10 @@ public class UsersViewController implements Initializable {
         try {
             changeRoot = loader.load();
             changeStage.setScene(new Scene(changeRoot));
-            ((ChangeUserViewController) loader.getController()).setCurrentUser(currentUser);
-            ((ChangeUserViewController) loader.getController()).setStage(changeStage);
+            ChangeUserViewController controller = loader.getController();
+            controller.setStage(changeStage);
+            controller.setCurrentUser(currentUser);
+            loader.setController(controller);
 
             changeStage.show();
         } catch (IOException e) {

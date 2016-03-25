@@ -8,6 +8,7 @@ import com.tanksoffline.core.services.ValidationService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -15,9 +16,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import javax.validation.ValidationException;
+import java.net.URL;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-public class ChangeUserViewController {
+public class ChangeUserViewController implements Initializable {
     @FXML
     private PasswordField passValue;
 
@@ -37,6 +40,9 @@ public class ChangeUserViewController {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
+        if (isManager != null) {
+            isManager.setSelected(user.isManager());
+        }
     }
 
     public void setStage(Stage stage) {
@@ -86,5 +92,12 @@ public class ChangeUserViewController {
     public void onKeyTyped() {
         passLabel.setText("Новый пароль");
         passLabel.setTextFill(Color.BLACK);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (currentUser != null && currentUser.isManager()) {
+            isManager.setSelected(true);
+        }
     }
 }
