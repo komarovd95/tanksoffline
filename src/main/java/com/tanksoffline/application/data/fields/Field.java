@@ -63,13 +63,13 @@ public class Field extends ActiveRecord {
                 }
                 break;
             case RIGHT:
-                if (j < fieldCells[i].length - 1) {
-                    fieldCells[i][j + 1].setBorder(Direction.TOP);
+                if (i < fieldCells.length - 1) {
+                    fieldCells[i + 1][j].setBorder(Direction.LEFT);
                 }
                 break;
             case BOTTOM:
-                if (i < fieldCells.length - 1) {
-                    fieldCells[i + 1][j].setBorder(Direction.LEFT);
+                if (j < fieldCells[i].length - 1) {
+                    fieldCells[i][j + 1].setBorder(Direction.TOP);
                 }
                 break;
         }
@@ -86,6 +86,10 @@ public class Field extends ActiveRecord {
             }
         }
         setSpawnCell(i, j, cell.getSpawnGroup());
+    }
+
+    public FieldCell[][] getFieldCells() {
+        return fieldCells;
     }
 
     public void setSpawnCell(int i, int j, int spawnGroup) {
@@ -119,5 +123,36 @@ public class Field extends ActiveRecord {
     @Override
     public String toString() {
         return String.format("[%s] Size: (%d, %d)", name, getWidth(), getHeight());
+    }
+
+    public void removeBorder(int i, int j, Direction direction) {
+        if (i == 0 && direction == Direction.LEFT) return;
+        if (i == getWidth() - 1 && direction == Direction.RIGHT) return;
+        if (j == 0 && direction == Direction.TOP) return;
+        if (j == getHeight() - 1 && direction == Direction.BOTTOM) return;
+
+        fieldCells[i][j].removeBorder(direction);
+        switch (direction) {
+            case TOP:
+                if (j > 0) {
+                    fieldCells[i][j - 1].removeBorder(Direction.BOTTOM);
+                }
+                break;
+            case LEFT:
+                if (i > 0) {
+                    fieldCells[i - 1][j].removeBorder(Direction.RIGHT);
+                }
+                break;
+            case RIGHT:
+                if (j < fieldCells[i].length - 1) {
+                    fieldCells[i][j + 1].removeBorder(Direction.TOP);
+                }
+                break;
+            case BOTTOM:
+                if (i < fieldCells.length - 1) {
+                    fieldCells[i + 1][j].removeBorder(Direction.LEFT);
+                }
+                break;
+        }
     }
 }

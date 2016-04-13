@@ -1,51 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.tanksoffline.application.views.controllers.MenuViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tanksoffline.application.views.controllers.MenuViewController">
    <children>
       <VBox layoutY="2.0">
          <children>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="Начать игру">
+            <Button mnemonicParsing="false" onAction="#onStartGameClick" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Начать игру">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="Пользователи" fx:id="usersBtn" onAction="#onUsersClick">
+            <Button fx:id="usersBtn" mnemonicParsing="false" onAction="#onUsersClick" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Пользователи">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="Карты">
+            <Button mnemonicParsing="false" onAction="#onFieldsClick" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Карты">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="Матчи">
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Матчи">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="О программе">
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="О программе">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="Выйти" onAction="#onLogoutClick">
+            <Button mnemonicParsing="false" onAction="#onLogoutClick" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Выйти">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
-            <Button mnemonicParsing="false" prefWidth="160.0" text="Закрыть" onAction="#onClose">
+            <Button mnemonicParsing="false" onAction="#onCloseClick" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Закрыть">
                <VBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
             </Button>
          </children>
       </VBox>

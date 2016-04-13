@@ -158,4 +158,21 @@ public class FieldCell implements Serializable {
         hasBottomBorder = (value & BOTTOM_BORDER) != 0;
         setSpawnGroup(value >> 4);
     }
+
+    public void removeBorder(Direction direction) {
+        switch (direction) {
+            case TOP:
+                hasTopBorder = false;
+                break;
+            case LEFT:
+                hasLeftBorder = false;
+                break;
+            case RIGHT:
+                hasRightBorder = false;
+                break;
+            case BOTTOM:
+                hasBottomBorder = false;
+                break;
+        }
+    }
 }

@@ -59,11 +59,9 @@ public class SimpleObservable<T> implements Observable<T> {
 
     @Override
     public void unbind() {
-        for (Observer<T> observer : observers) {
-            if (observer.getClass().isAssignableFrom(Binding.class)) {
-                observers.remove(observer);
-                ((Binding<?, T>) observer).removeBound(this);
-            }
-        }
+        observers.stream().filter(observer -> observer.getClass().isAssignableFrom(Binding.class)).forEach(observer -> {
+            observers.remove(observer);
+            ((Binding<?, T>) observer).removeBound(this);
+        });
     }
 }

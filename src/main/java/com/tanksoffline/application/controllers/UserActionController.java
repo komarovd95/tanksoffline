@@ -6,9 +6,10 @@ import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class UserActionController {
+public class UserActionController implements ActionController<User> {
     private UserModel userModel;
 
     public UserActionController() {
@@ -16,25 +17,40 @@ public class UserActionController {
                 .getComponent(UserModel.class);
     }
 
-    public Callable<User> onLogin(String login, String password) {
+    @Override
+    public Callable<User> onCreate(Map<String, Object> values) {
         return () -> {
-            userModel.login(login, password);
+            userModel.register((String) values.get("login"), (String) values.get("password"),
+                    (boolean) values.get("userType"));
             return userModel.getLoggedUser();
         };
     }
 
-    public Callable<User> onSignUp(String login, String password, boolean asManager) {
+    @Override
+    public Callable<User> onFind(Map<String, Object> values) {
         return () -> {
-            userModel.register(login, password, asManager);
+            userModel.login((String) values.get("login"), (String) values.get("password"));
             return userModel.getLoggedUser();
         };
     }
 
+    @Override
+    public Callable<User> onFindOne(Object id) {
+        return () -> userModel.findOne(id);
+    }
+
+    @Override
     public Callable<List<User>> onFindAll() {
         return () -> userModel.findAll();
     }
 
-    public Callable<User> onLogout() {
+    @Override
+    public Callable<User> onUpdate(User user, Map<String, Object> values) {
+        return () -> userModel.update(user, values);
+    }
+
+    @Override
+    public Callable<User> onDestroy() {
         return () -> {
             User loggedUser = userModel.getLoggedUser();
             userModel.logout();
@@ -42,20 +58,16 @@ public class UserActionController {
         };
     }
 
+    @Override
     public Callable<User> onRemove(User user) {
         return () -> {
-            userModel.remove(user);
+            userModel.delete(user);
             return null;
         };
     }
 
-    public Callable<User> onUpdate(User user, String password, boolean isManager) {
-        return () -> {
-            if (password != null) {
-                userModel.updatePassword(user, password);
-            }
-            userModel.updateUserType(user, isManager);
-            return user;
-        };
+    @Override
+    public Callable<User> onConstruct() {
+        return null;
     }
 }

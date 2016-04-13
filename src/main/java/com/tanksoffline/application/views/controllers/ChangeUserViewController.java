@@ -1,9 +1,9 @@
 package com.tanksoffline.application.views.controllers;
 
+import com.tanksoffline.application.App;
 import com.tanksoffline.application.controllers.UserActionController;
 import com.tanksoffline.application.data.users.User;
 import com.tanksoffline.application.utils.TaskFactory;
-import com.tanksoffline.core.services.ServiceLocator;
 import com.tanksoffline.core.services.ValidationService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -14,9 +14,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import javax.validation.ValidationException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -38,24 +40,16 @@ public class ChangeUserViewController implements Initializable {
         this.actionController = new UserActionController();
     }
 
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-        if (isManager != null) {
-            isManager.setSelected(user.isManager());
-        }
-    }
-
-    public void setStage(Stage stage) {
-        this.currentStage = stage;
-    }
-
     public void onAccept() {
         String passToken = (passValue.getText().equals("")) ? null : passValue.getText();
         new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new TaskFactory<Void>(() -> {
-                    actionController.onUpdate(currentUser, passToken, isManager.isSelected()).call();
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("password", passToken);
+                    params.put("userType", isManager.isSelected());
+                    actionController.onUpdate(currentUser, params).call();
                     return null;
                 }).create();
             }
@@ -63,14 +57,15 @@ public class ChangeUserViewController implements Initializable {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                currentStage.close();
+                currentStage.getOnCloseRequest().handle(
+                        new WindowEvent(currentStage, WindowEvent.WINDOW_CLOSE_REQUEST));
             }
 
             @Override
             protected void failed() {
                 Throwable t = exceptionProperty().get();
                 if (t instanceof ValidationException) {
-                    ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
+                    ValidationService service = App.getService(ValidationService.class);
                     Map<String, String> errors = service.getErrorClasses();
 
                     String message = errors.get("Password");
@@ -96,8 +91,12 @@ public class ChangeUserViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (currentUser != null && currentUser.isManager()) {
-            isManager.setSelected(true);
-        }
+        currentUser = App.getInstance().getNavigation().getNavigationInfo();
+        passValue.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && currentStage == null) {
+                currentStage = (Stage) passValue.getScene().getWindow();
+                isManager.setSelected(currentUser.isManager());
+            }
+        });
     }
 }

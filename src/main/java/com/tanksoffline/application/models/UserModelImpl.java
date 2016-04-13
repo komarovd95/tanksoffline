@@ -11,6 +11,7 @@ import com.tanksoffline.core.utils.validation.Login;
 import com.tanksoffline.core.utils.validation.Password;
 
 import java.util.List;
+import java.util.Map;
 
 public class UserModelImpl implements UserModel {
     private final DataService dataService;
@@ -50,23 +51,6 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public void remove(User user) {
-        user.remove();
-    }
-
-    @Override
-    public void updatePassword(User user, @Password String password) {
-        user.setPassword(password);
-        user.update();
-    }
-
-    @Override
-    public void updateUserType(User user, boolean asManager) {
-        user.setUserType(loggedUser.get(), (asManager) ? UserType.MANAGER : UserType.USER);
-        user.update();
-    }
-
-    @Override
     public User getLoggedUser() {
         return loggedUser.get();
     }
@@ -77,7 +61,46 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
+    public User findOne(Object value) {
+        return dataService.find(User.class, value);
+    }
+
+    @Override
     public List<User> findAll() {
         return dataService.findAll(User.class);
+    }
+
+    @Override
+    public List<User> findBy(Map<String, Object> params) {
+        return dataService.where(User.class, params);
+    }
+
+    @Override
+    public User update(User user, Map<String, Object> values) {
+        values.forEach((param, value) -> {
+            switch (param) {
+                case "password":
+                    updatePassword(user, (String) value);
+                    break;
+                case "userType":
+                    updateUserType(user, (boolean) value);
+                    break;
+            }
+        });
+        user.update();
+        return user;
+    }
+
+    private void updatePassword(User user, @Password String password) {
+        user.setPassword(password);
+    }
+
+    private void updateUserType(User user, boolean asManager) {
+        user.setUserType(loggedUser.get(), (asManager) ? UserType.MANAGER : UserType.USER);
+    }
+
+    @Override
+    public void delete(User user) {
+        user.remove();
     }
 }

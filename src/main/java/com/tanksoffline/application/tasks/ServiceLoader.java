@@ -1,4 +1,5 @@
 package com.tanksoffline.application.tasks;
+
 import com.tanksoffline.core.services.ServiceLocator;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

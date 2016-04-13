@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="953.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Canvas fx:id="canvas" height="800.0" width="800.0" StackPane.alignment="TOP_CENTER">
+         <StackPane.margin>
+            <Insets bottom="40.0" top="40.0" />
+         </StackPane.margin>
+      </Canvas>
+      <Button fx:id="backBtn" mnemonicParsing="false" text="Закончить" StackPane.alignment="BOTTOM_CENTER">
+         <StackPane.margin>
+            <Insets bottom="40.0" />
+         </StackPane.margin>
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+      <Label fx:id="playerHpLabel" prefHeight="85.0" prefWidth="74.0" text="Вы 100" textAlignment="CENTER" wrapText="true" StackPane.alignment="CENTER_LEFT">
+         <StackPane.margin>
+            <Insets left="40.0" />
+         </StackPane.margin>
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <Label fx:id="enemyHpLabel" prefHeight="79.0" prefWidth="141.0" text="Противник 100" textAlignment="CENTER" wrapText="true" StackPane.alignment="CENTER_RIGHT">
+         <StackPane.margin>
+            <Insets right="40.0" />
+         </StackPane.margin>
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+   </children>
+</StackPane>

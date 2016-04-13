@@ -3,43 +3,32 @@ package com.tanksoffline.application;
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.application.controllers.ApplicationController;
 import com.tanksoffline.application.models.core.UserModel;
+import com.tanksoffline.application.models.core.game.GameModel;
+import com.tanksoffline.application.utils.Navigation;
 import com.tanksoffline.core.services.Service;
 import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Collections;
+import java.util.List;
 
 public class App extends Application {
-    private static final Logger logger = Logger.getLogger(App.class.getName());
 
     private static App instance;
-
-    public static class ResourceFactory implements Factory<Parent> {
-        private String resourceUrl;
-
-        public ResourceFactory(String url) {
-            this.resourceUrl = url;
-        }
-
-        @Override
-        public Parent create() {
-            try {
-                return FXMLLoader.load(App.class.getResource(resourceUrl));
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-                throw new RuntimeException(e);
-            }
-        }
-    }
 
     public static App getInstance() {
         return instance;
@@ -52,8 +41,7 @@ public class App extends Application {
     }
 
     public static <T> T getComponent(Class<T> c) {
-        return ServiceLocator.getInstance().getService(DIService.class)
-                .getComponent(c);
+        return ServiceLocator.getInstance().getService(DIService.class).getComponent(c);
     }
 
     public static <T extends Service> T getService(Class<T> c) {
@@ -62,16 +50,30 @@ public class App extends Application {
 
     private Stage primaryStage;
     private ApplicationController applicationController;
+    private Navigation navigationController;
+    private GameModel gameModel;
 
     public App() {
-        applicationController = ServiceLocator.getInstance().getService(DIService.class)
-                .getComponent(ApplicationController.class);
         instance = this;
+
+        applicationController = App.getComponent(ApplicationController.class);
+        navigationController = App.getComponent(Navigation.class);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        this.primaryStage.setScene(new Scene(new StackPane()));
+        this.primaryStage.setMaximized(true);
+        this.primaryStage.setOnCloseRequest(event -> {
+            event.consume();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Вы уверены, что хотите покинуть игру?");
+            alert.setHeaderText("Выход");
+            alert.showAndWait()
+                    .filter(response -> response == ButtonType.OK)
+                    .ifPresent(response -> Platform.exit());
+        });
+
         applicationController.onStart();
     }
 
@@ -94,16 +96,60 @@ public class App extends Application {
         return ServiceLocator.getInstance().getService(DIService.class).getComponent(UserModel.class);
     }
 
+    public GameModel getGameModel() {
+        return gameModel;
+    }
+
+    public void setGameModel(GameModel gameModel) {
+        this.gameModel = gameModel;
+    }
+
     public ApplicationController getApplicationController() {
         return applicationController;
     }
+
+    public StackPane getContentPane() {
+        return (StackPane) primaryStage.getScene().getRoot();
+    }
+
+    public void setContent(List<? extends Node> content, String style) {
+        StackPane contentPane = getContentPane();
+        contentPane.getChildren().setAll(content);
+        contentPane.setStyle(style);
+    }
+
+    public void setContent(Node content, String style, Pos position) {
+        setContent(Collections.singletonList(content), style);
+        StackPane.setAlignment(content, position);
+    }
+
+    public void setContent(Node content, String style, boolean fullSized) {
+        if (fullSized) {
+            AnchorPane anchorPane = new AnchorPane();
+            setContent(Collections.singletonList(anchorPane), style);
+
+            anchorPane.getChildren().add(content);
+
+            AnchorPane.setTopAnchor(content, 0.0);
+            AnchorPane.setBottomAnchor(content, 0.0);
+            AnchorPane.setLeftAnchor(content, 0.0);
+            AnchorPane.setRightAnchor(content, 0.0);
+        } else {
+            setContent(Collections.singletonList(content), style);
+        }
+    }
+
+    public Navigation getNavigation() {
+        return navigationController;
+    }
+
 
     public static void main(String[] args) {
         try {
             ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
             launch(args);
         } catch (Throwable t) {
-            System.out.println(t.getMessage());
+            System.err.println(t.getMessage());
         }
     }
 }

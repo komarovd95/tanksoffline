@@ -1,11 +1,9 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.controllers.ApplicationController;
+import com.tanksoffline.application.App;
 import com.tanksoffline.application.controllers.UserActionController;
 import com.tanksoffline.application.data.users.User;
 import com.tanksoffline.application.utils.TaskFactory;
-import com.tanksoffline.core.services.DIService;
-import com.tanksoffline.core.services.ServiceLocator;
 import com.tanksoffline.core.services.ValidationService;
 import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.utils.SingletonFactory;
@@ -21,6 +19,7 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import javax.validation.ValidationException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -77,17 +76,17 @@ public class LoginViewController implements Initializable {
                 new Service<User>() {
                     @Override
                     protected Task<User> createTask() {
-                        return new TaskFactory<>(
-                                actionController.onLogin(loginValue.getText().trim(), passValue.getText().trim()))
-                                .create();
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("login", loginValue.getText().trim());
+                        params.put("password", passValue.getText().trim());
+                        return new TaskFactory<>(actionController.onFind(params)).create();
                     }
 
                     @Override
                     protected void failed() {
                         super.failed();
                         Throwable t = this.exceptionProperty().get();
-                        ValidationService service = ServiceLocator.getInstance()
-                                .getService(ValidationService.class);
+                        ValidationService service = App.getService(ValidationService.class);
                         if (t instanceof ValidationException) {
                             fireError();
                         } else if (t instanceof IllegalStateException) {
@@ -118,16 +117,18 @@ public class LoginViewController implements Initializable {
                 new Service<User>() {
                     @Override
                     protected Task<User> createTask() {
-                        return new TaskFactory<>(actionController.onSignUp(loginValue.getText().trim(),
-                                passValue.getText().trim(), asManager.isSelected())).create();
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("login", loginValue.getText().trim());
+                        params.put("password", passValue.getText().trim());
+                        params.put("userType", asManager.isSelected());
+                        return new TaskFactory<>(actionController.onCreate(params)).create();
                     }
 
                     @Override
                     protected void failed() {
                         super.failed();
                         Throwable t = this.exceptionProperty().get();
-                        ValidationService service = ServiceLocator.getInstance()
-                                .getService(ValidationService.class);
+                        ValidationService service = App.getService(ValidationService.class);
                         if (t instanceof ValidationException) {
                             fireError();
                         } else if (t.getCause() instanceof ConstraintViolationException) {
@@ -180,7 +181,7 @@ public class LoginViewController implements Initializable {
     }
 
     private void fireError() {
-        ValidationService service = ServiceLocator.getInstance().getService(ValidationService.class);
+        ValidationService service = App.getService(ValidationService.class);
         Map<String, String> errors = service.getErrorClasses();
 
         String message = errors.get("Login");
@@ -197,9 +198,7 @@ public class LoginViewController implements Initializable {
     private void setError(Label label, String message) {
         label.setText(message);
         label.setTextFill(Color.rgb(230, 40, 40));
-        ServiceLocator.getInstance().getService(DIService.class)
-                .getComponent(ApplicationController.class)
-                .getCurrentStage().sizeToScene();
+        label.getScene().getWindow().sizeToScene();
     }
 
     private void brokeInterface(boolean isBroken) {
