@@ -1,6 +1,6 @@
 package com.tanksoffline.application.models.core.game;
 
-import com.tanksoffline.core.utils.obs.Observable;
+import com.tanksoffline.core.utils.observer.Observable;
 
 public interface Movable {
     Observable<Boolean> getIsMovingProperty();

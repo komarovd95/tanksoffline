@@ -1,7 +1,7 @@
 package com.tanksoffline.application.controllers;
 
-import com.tanksoffline.application.App;
-import com.tanksoffline.application.data.fields.Direction;
+import com.tanksoffline.application.app.App;
+import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.application.models.core.game.GameModel;
 import com.tanksoffline.application.models.core.game.TankModel;
 

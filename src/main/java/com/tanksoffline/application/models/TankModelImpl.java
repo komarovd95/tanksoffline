@@ -1,9 +1,9 @@
 package com.tanksoffline.application.models;
 
-import com.tanksoffline.application.data.fields.Direction;
+import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.application.models.core.game.TankModel;
-import com.tanksoffline.core.utils.obs.Observable;
-import com.tanksoffline.core.utils.obs.SimpleObservable;
+import com.tanksoffline.core.utils.observer.Observable;
+import com.tanksoffline.core.utils.observer.SimpleProperty;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,16 +20,16 @@ public class TankModelImpl implements TankModel {
     private Observable<Boolean> rotatingProperty;
 
     public TankModelImpl(int x, int y, int initHealth, int damage, String iconUrl) {
-        this.xPosition = new SimpleObservable<>(x);
-        this.yPosition = new SimpleObservable<>(y);
-        this.currentDirection = new SimpleObservable<>();
-        this.health = new SimpleObservable<>(initHealth);
+        this.xPosition = new SimpleProperty<>(x);
+        this.yPosition = new SimpleProperty<>(y);
+        this.currentDirection = new SimpleProperty<>();
+        this.health = new SimpleProperty<>(initHealth);
         this.damage = damage;
         this.iconUrl = iconUrl;
-        this.movingProperty = new SimpleObservable<>(false);
+        this.movingProperty = new SimpleProperty<>(false);
         this.moveCounter = new AtomicInteger();
 
-        this.rotatingProperty = new SimpleObservable<>(false);
+        this.rotatingProperty = new SimpleProperty<>(false);
 
     }
 

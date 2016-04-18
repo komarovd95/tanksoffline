@@ -1,8 +1,8 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.models.core.UserModel;
 import com.tanksoffline.application.utils.TaskFactory;
 import javafx.concurrent.Service;
@@ -32,8 +32,8 @@ public class MenuViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        User loggedUser = userModel.getLoggedUser();
-        if (!loggedUser.isManager()) {
+        UserEntity loggedUserEntity = userModel.getLoggedUser();
+        if (!loggedUserEntity.isManager()) {
             ((VBox) usersBtn.getParent()).getChildren().remove(usersBtn);
         }
     }
@@ -43,9 +43,9 @@ public class MenuViewController implements Initializable {
     }
 
     public void onLogoutClick() {
-        new Service<User>() {
+        new Service<UserEntity>() {
             @Override
-            protected Task<User> createTask() {
+            protected Task<UserEntity> createTask() {
                 return new TaskFactory<>(actionController.onDestroy()).create();
             }
         }.start();

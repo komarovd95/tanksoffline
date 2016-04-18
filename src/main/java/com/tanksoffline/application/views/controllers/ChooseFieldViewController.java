@@ -1,10 +1,10 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
-import com.tanksoffline.application.controllers.ActionController;
+import com.tanksoffline.application.app.App;
+import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.application.controllers.FieldActionController;
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.application.data.FieldCell;
 import com.tanksoffline.application.utils.BoundRenderer;
 import com.tanksoffline.application.utils.Renderer;
 import com.tanksoffline.application.utils.TableDataBuilder;
@@ -28,13 +28,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ChooseFieldViewController implements FieldView {
-    private ActionController<Field> actionController;
-    private Renderer<Field> fieldRenderer;
+    private ActionController<FieldEntity> actionController;
+    private Renderer<FieldEntity> fieldRenderer;
     private ObjectProperty<Pair<Integer, Integer>> playerSpawnCell;
     private ObjectProperty<Pair<Integer, Integer>> enemySpawnCell;
 
     @FXML
-    private ListView<Field> fieldList;
+    private ListView<FieldEntity> fieldList;
 
     @FXML
     private Button createBtn;
@@ -88,7 +88,7 @@ public class ChooseFieldViewController implements FieldView {
 
         backBtn.setOnAction(event -> ChooseFieldViewController.this.onBackClick());
 
-        TableDataBuilder<Field> dataBuilder = new TableDataBuilder<>();
+        TableDataBuilder<FieldEntity> dataBuilder = new TableDataBuilder<>();
         dataBuilder.setBuiltData(actionController.onFindAll());
 
         fieldList.setItems(dataBuilder.build());
@@ -119,7 +119,7 @@ public class ChooseFieldViewController implements FieldView {
         });
 
         canvas.setOnMouseClicked(event -> {
-            Field field = getCurrentField();
+            FieldEntity field = getCurrentField();
 
             if (field == null) return;
 
@@ -167,7 +167,7 @@ public class ChooseFieldViewController implements FieldView {
         throw new UnsupportedOperationException();
     }
 
-    private Field getCurrentField() {
+    private FieldEntity getCurrentField() {
         return fieldList.getSelectionModel().getSelectedItem();
     }
 

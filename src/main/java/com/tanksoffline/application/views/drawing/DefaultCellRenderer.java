@@ -1,7 +1,7 @@
 package com.tanksoffline.application.views.drawing;
 
-import com.tanksoffline.application.data.fields.Direction;
-import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.utils.Direction;
+import com.tanksoffline.application.data.FieldCell;
 import com.tanksoffline.application.utils.BoundRenderer;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;

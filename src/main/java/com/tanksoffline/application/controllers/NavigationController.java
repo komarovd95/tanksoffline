@@ -1,6 +1,6 @@
 package com.tanksoffline.application.controllers;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.utils.ApplicationStage;
 import com.tanksoffline.application.utils.Navigation;
 

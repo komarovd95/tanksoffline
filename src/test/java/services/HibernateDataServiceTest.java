@@ -1,7 +1,6 @@
 package services;
 
-import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.application.services.HibernateDataService;
 import com.tanksoffline.core.services.DataService;
@@ -19,7 +18,7 @@ import static org.junit.Assert.*;
 
 public class HibernateDataServiceTest {
     private DataService dataService;
-    private List<User> userList;
+    private List<UserEntity> userEntityList;
 
     @Before
     public void setUp() throws Exception {
@@ -27,14 +26,14 @@ public class HibernateDataServiceTest {
         dataService = ServiceLocator.getInstance().getService(HibernateDataService.class);
         dataService.start();
 
-        userList = new ArrayList<>();
-        userList.add(new User("Dave", "pass123"));
-        userList.add(new User("Garry", "pls123"));
-        userList.add(new User("Viktor", "fst23", UserType.MANAGER));
-        userList.add(new User("Mark", "123", UserType.MANAGER));
+        userEntityList = new ArrayList<>();
+        userEntityList.add(new UserEntity("Dave", "pass123"));
+        userEntityList.add(new UserEntity("Garry", "pls123"));
+        userEntityList.add(new UserEntity("Viktor", "fst23", UserEntity.UserType.MANAGER));
+        userEntityList.add(new UserEntity("Mark", "123", UserEntity.UserType.MANAGER));
 
-        for (User user : userList) {
-            dataService.save(user);
+        for (UserEntity userEntity : userEntityList) {
+            dataService.save(userEntity);
         }
     }
 
@@ -46,19 +45,19 @@ public class HibernateDataServiceTest {
     @Test
     public void testWhereMap() throws Exception {
         Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("userType", UserType.MANAGER);
-        assertEquals(userList.subList(2, 4), dataService.where(User.class, queryMap));
+        queryMap.put("userType", UserEntity.UserType.MANAGER);
+        assertEquals(userEntityList.subList(2, 4), dataService.findBy(UserEntity.class, queryMap));
     }
 
     @Test
     public void testWhereSingleParam() throws Exception {
-        assertEquals(userList.subList(2, 4),
-                dataService.where(User.class, "userType", UserType.MANAGER));
+        assertEquals(userEntityList.subList(2, 4),
+                dataService.findBy(UserEntity.class, "userType", UserEntity.UserType.MANAGER));
     }
 
     @Test
     public void testWhereQuery() throws Exception {
-        String queryString = "SELECT user FROM User user WHERE user.userType = ?";
-        assertEquals(userList.subList(2, 4), dataService.where(queryString, UserType.MANAGER));
+        String queryString = "SELECT user FROM UserEntity user WHERE user.userType = ?";
+        assertEquals(userEntityList.subList(2, 4), dataService.findBy(queryString, UserEntity.UserType.MANAGER));
     }
 }

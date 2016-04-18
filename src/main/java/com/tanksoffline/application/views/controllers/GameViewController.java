@@ -1,10 +1,10 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.GameController;
-import com.tanksoffline.application.data.fields.Direction;
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.utils.Direction;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.application.data.FieldCell;
 import com.tanksoffline.application.models.core.game.GameModel;
 import com.tanksoffline.application.models.core.game.TankModel;
 import com.tanksoffline.application.utils.BoundRenderer;
@@ -40,7 +40,7 @@ public class GameViewController implements Initializable, PartialView {
     private BoundRenderer<TankModel> tankModelBoundRenderer;
     private BoundRenderer<Sprite> spriteRenderer;
     private GameController gameController;
-    private Renderer<Field> fieldRenderer;
+    private Renderer<FieldEntity> fieldRenderer;
     private SingletonFactory<Image> playerImageFactory;
     private SingletonFactory<Image> enemyImageFactory;
     private Sprite playerSprite;

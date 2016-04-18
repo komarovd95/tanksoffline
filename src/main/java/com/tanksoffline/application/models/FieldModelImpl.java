@@ -1,6 +1,6 @@
 package com.tanksoffline.application.models;
 
-import com.tanksoffline.application.data.fields.Field;
+import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.models.core.FieldModel;
 import com.tanksoffline.application.models.core.UserModel;
 import com.tanksoffline.core.services.DIService;
@@ -16,34 +16,34 @@ public class FieldModelImpl implements FieldModel {
     private static final DataService dataService = ServiceLocator.getInstance().getService(DataService.class);
 
     @Override
-    public Field findOne(Object value) {
+    public FieldEntity findOne(Object value) {
         return null;
     }
 
     @Override
-    public List<Field> findAll() {
-        return dataService.findAll(Field.class);
+    public List<FieldEntity> findAll() {
+        return dataService.findAll(FieldEntity.class);
     }
 
     @Override
-    public List<Field> findBy(Map<String, Object> params) {
+    public List<FieldEntity> findBy(Map<String, Object> params) {
         return Collections.emptyList();
     }
 
     @Override
-    public Field update(Field field, Map<String, Object> values) {
+    public FieldEntity update(FieldEntity field, Map<String, Object> values) {
         field.update();
         return field;
     }
 
     @Override
-    public void delete(Field field) {
+    public void delete(FieldEntity field) {
         field.remove();
     }
 
     @Override
-    public Field create(@Login String fieldName, int fieldSize) {
-        Field field = new Field(ServiceLocator.getInstance().getService(DIService.class)
+    public FieldEntity create(@Login String fieldName, int fieldSize) {
+        FieldEntity field = new FieldEntity(ServiceLocator.getInstance().getService(DIService.class)
                 .getComponent(UserModel.class).getLoggedUser(), fieldName, fieldSize, fieldSize);
         field.save();
         return field;

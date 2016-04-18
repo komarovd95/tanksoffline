@@ -1,8 +1,8 @@
 package api.obs;
 
-import com.tanksoffline.core.utils.obs.Observable;
-import com.tanksoffline.core.utils.obs.Observer;
-import com.tanksoffline.core.utils.obs.SimpleObservable;
+import com.tanksoffline.core.utils.observer.Observable;
+import com.tanksoffline.core.utils.observer.Observer;
+import com.tanksoffline.core.utils.observer.SimpleProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ public class ObservableTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        observableString = new SimpleObservable<>();
+        observableString = new SimpleProperty<>();
 
         observer = (Observer<String>) PowerMockito.mock(Observer.class);
         observableString.addObserver(observer);

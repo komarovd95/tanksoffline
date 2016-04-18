@@ -1,7 +1,8 @@
 package com.tanksoffline.application.controllers;
 
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.models.core.UserModel;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class UserActionController implements ActionController<User> {
+public class UserActionController implements ActionController<UserEntity> {
     private UserModel userModel;
 
     public UserActionController() {
@@ -18,7 +19,7 @@ public class UserActionController implements ActionController<User> {
     }
 
     @Override
-    public Callable<User> onCreate(Map<String, Object> values) {
+    public Callable<UserEntity> onCreate(Map<String, Object> values) {
         return () -> {
             userModel.register((String) values.get("login"), (String) values.get("password"),
                     (boolean) values.get("userType"));
@@ -27,7 +28,7 @@ public class UserActionController implements ActionController<User> {
     }
 
     @Override
-    public Callable<User> onFind(Map<String, Object> values) {
+    public Callable<UserEntity> onFind(Map<String, Object> values) {
         return () -> {
             userModel.login((String) values.get("login"), (String) values.get("password"));
             return userModel.getLoggedUser();
@@ -35,39 +36,39 @@ public class UserActionController implements ActionController<User> {
     }
 
     @Override
-    public Callable<User> onFindOne(Object id) {
+    public Callable<UserEntity> onFindOne(Object id) {
         return () -> userModel.findOne(id);
     }
 
     @Override
-    public Callable<List<User>> onFindAll() {
+    public Callable<List<UserEntity>> onFindAll() {
         return () -> userModel.findAll();
     }
 
     @Override
-    public Callable<User> onUpdate(User user, Map<String, Object> values) {
-        return () -> userModel.update(user, values);
+    public Callable<UserEntity> onUpdate(UserEntity userEntity, Map<String, Object> values) {
+        return () -> userModel.update(userEntity, values);
     }
 
     @Override
-    public Callable<User> onDestroy() {
+    public Callable<UserEntity> onDestroy() {
         return () -> {
-            User loggedUser = userModel.getLoggedUser();
+            UserEntity loggedUserEntity = userModel.getLoggedUser();
             userModel.logout();
-            return loggedUser;
+            return loggedUserEntity;
         };
     }
 
     @Override
-    public Callable<User> onRemove(User user) {
+    public Callable<UserEntity> onRemove(UserEntity userEntity) {
         return () -> {
-            userModel.delete(user);
+            userModel.delete(userEntity);
             return null;
         };
     }
 
     @Override
-    public Callable<User> onConstruct() {
+    public Callable<UserEntity> onConstruct() {
         return null;
     }
 }

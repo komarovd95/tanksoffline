@@ -1,6 +1,5 @@
 package com.tanksoffline.application.services;
 
-import com.tanksoffline.core.data.ActiveRecord;
 import com.tanksoffline.core.services.DataService;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
@@ -40,7 +39,7 @@ public class HibernateDataService implements DataService {
     }
 
     @Override
-    public <T> T find(Class<T> itemClass, Object id) {
+    public <T> T findById(Class<T> itemClass, Object id) {
         return session.get(itemClass, (Serializable) id);
     }
 
@@ -57,15 +56,15 @@ public class HibernateDataService implements DataService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> List<T> where(Class<T> itemClass, Map<String, Object> params) {
+    public <T> List<T> findBy(Class<T> itemClass, Map<String, Object> args) {
         Criteria criteria = session.createCriteria(itemClass);
-        criteria.add(Restrictions.allEq(params));
+        criteria.add(Restrictions.allEq(args));
         return criteria.list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> List<T> where(Class<T> itemClass, String paramName, Object paramValue) {
+    public <T> List<T> findBy(Class<T> itemClass, String paramName, Object paramValue) {
         Criteria criteria = session.createCriteria(itemClass);
         criteria.add(Restrictions.eq(paramName, paramValue));
         return criteria.list();
@@ -73,10 +72,10 @@ public class HibernateDataService implements DataService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> List<T> where(String query, Object... params) {
+    public <T> List<T> findBy(String query, Object... args) {
         Query q = session.createQuery(query);
-        for (int i = 0; i < params.length; i++) {
-            q.setParameter(i, params[i]);
+        for (int i = 0; i < args.length; i++) {
+            q.setParameter(i, args[i]);
         }
         return q.list();
     }

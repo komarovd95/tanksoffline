@@ -1,6 +1,6 @@
 package services;
 
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.application.services.HibernateDataService;
 import com.tanksoffline.core.services.DataService;
@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class DataServiceTest {
     private DataService dataService;
-    private User user;
+    private UserEntity userEntity;
 
     @Before
     public void setUp() throws Exception {
@@ -22,7 +22,7 @@ public class DataServiceTest {
         dataService = ServiceLocator.getInstance().getService(HibernateDataService.class);
         dataService.start();
 
-        user = new User("Dave", "pass123");
+        userEntity = new UserEntity("Dave", "pass123");
     }
 
     @After
@@ -32,39 +32,39 @@ public class DataServiceTest {
 
     @Test
     public void testSave() throws Exception {
-        dataService.save(user);
-        assertEquals(1L, user.getId().longValue());
-        assertEquals(user.getLogin(), dataService.find(User.class, 1L).getLogin());
+        dataService.save(userEntity);
+        assertEquals(1L, userEntity.getId().longValue());
+        assertEquals(userEntity.getLogin(), dataService.findById(UserEntity.class, 1L).getLogin());
     }
 
     @Test
     public void testRemove() throws Exception {
-        dataService.save(user);
-        dataService.remove(user);
-        assertNull(dataService.find(User.class, 1L));
+        dataService.save(userEntity);
+        dataService.remove(userEntity);
+        assertNull(dataService.findById(UserEntity.class, 1L));
     }
 
     @Test
     public void testUpdate() throws Exception {
-        dataService.save(user);
-        user.setLogin("Mark");
-        dataService.update(user);
-        assertEquals(user.getLogin(), dataService.find(User.class, 1L).getLogin());
+        dataService.save(userEntity);
+        userEntity.setLogin("Mark");
+        dataService.update(userEntity);
+        assertEquals(userEntity.getLogin(), dataService.findById(UserEntity.class, 1L).getLogin());
     }
 
     @Test
     public void testRefresh() throws Exception {
-        dataService.save(user);
-        user.setLogin("Mark");
-        dataService.refresh(user);
-        assertEquals(user.getLogin(), "Dave");
+        dataService.save(userEntity);
+        userEntity.setLogin("Mark");
+        dataService.refresh(userEntity);
+        assertEquals(userEntity.getLogin(), "Dave");
     }
 
     @Test
     public void testFind() throws Exception {
-        dataService.save(user);
-        assertNotNull(dataService.find(User.class, 1L));
-        assertNull(dataService.find(User.class, 2L));
+        dataService.save(userEntity);
+        assertNotNull(dataService.findById(UserEntity.class, 1L));
+        assertNull(dataService.findById(UserEntity.class, 2L));
     }
 
     @Test

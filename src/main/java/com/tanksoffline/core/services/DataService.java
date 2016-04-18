@@ -8,12 +8,12 @@ public interface DataService extends Service {
     <T> T remove(T item);
     <T> T update(T item);
     <T> T refresh(T item);
-    <T> T find(Class<T> itemClass, Object id);
-    <T> T fetch(T item, String... fetchedFields);
 
-    <T> List<T> where(Class<T> itemClass, Map<String, Object> params);
-    <T> List<T> where(Class<T> itemClass, String paramName, Object paramValue);
-    <T> List<T> where(String query, Object... params);
-
+    <T> T findById(Class<T> itemClass, Object id);
     <T> List<T> findAll(Class<T> itemClass);
+    <T> List<T> findBy(Class<T> itemClass, Map<String, Object> args);
+    <T> List<T> findBy(Class<T> itemClass, String paramName, Object paramValue);
+    <T> List<T> findBy(String query, Object... args);
+
+    <T> T fetch(T item, String... fetchedFields);
 }

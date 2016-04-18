@@ -33,7 +33,7 @@ public class ServiceLocator {
     private Map<Class<? extends Service>, Factory<? extends Service>> factoryMap;
 
     private ServiceLocator() {
-        serviceMap = configuration.configureServices();
+        serviceMap = configuration.configure();
         factoryMap = configuration.configureFactories();
     }
 
@@ -49,14 +49,14 @@ public class ServiceLocator {
             if (service == null) {
                 Factory<? extends Service> factory = factoryMap.get(serviceClass);
                 if (factory == null) {
-                    throw new RuntimeException("Can't create a service " + serviceClass.getSimpleName());
+                    throw new RuntimeException("Cannot create a service " + serviceClass.getSimpleName());
                 } else {
                     service = factory.create();
                     serviceMap.put(serviceClass, service);
                 }
             }
         } else {
-            throw new RuntimeException("Can't look up a service " + serviceClass.getSimpleName());
+            throw new RuntimeException("Cannot look up a service " + serviceClass.getSimpleName());
         }
     }
 

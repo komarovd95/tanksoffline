@@ -1,18 +1,18 @@
 package com.tanksoffline.application.models.core;
 
-import com.tanksoffline.application.data.users.User;
-import com.tanksoffline.core.utils.obs.Observable;
+import com.tanksoffline.application.entities.UserEntity;
+import com.tanksoffline.core.utils.observer.Observable;
 import com.tanksoffline.core.utils.validation.Login;
 import com.tanksoffline.core.utils.validation.Password;
 
-public interface UserModel extends DataModel<User> {
+public interface UserModel extends DataModel<UserEntity> {
     void login(@Login String login, @Password String password);
 
     void register(@Login String login, @Password String password, boolean asManager);
 
     void logout();
 
-    User getLoggedUser();
+    UserEntity getLoggedUser();
 
-    Observable<User> getLoggedUserProperty();
+    Observable<UserEntity> getLoggedUserProperty();
 }

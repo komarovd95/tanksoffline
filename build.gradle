@@ -13,6 +13,7 @@ dependencies {
     testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.4'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
 
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.1.0.Final'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.1.0.Final'
     compile group: 'com.h2database', name: 'h2', version: '1.4.191'

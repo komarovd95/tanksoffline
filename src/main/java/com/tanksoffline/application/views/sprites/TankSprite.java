@@ -1,10 +1,10 @@
 package com.tanksoffline.application.views.sprites;
 
-import com.tanksoffline.application.data.fields.Direction;
+import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.application.models.core.game.TankModel;
 import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.utils.SingletonFactory;
-import com.tanksoffline.core.utils.obs.Observer;
+import com.tanksoffline.core.utils.observer.Observer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.SnapshotParameters;

@@ -1,7 +1,7 @@
 package fields;
 
-import com.tanksoffline.application.data.fields.Direction;
-import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.utils.Direction;
+import com.tanksoffline.application.data.FieldCell;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

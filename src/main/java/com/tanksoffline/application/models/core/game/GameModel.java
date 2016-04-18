@@ -1,10 +1,10 @@
 package com.tanksoffline.application.models.core.game;
 
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.core.utils.obs.Observable;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.core.utils.observer.Observable;
 
 public interface GameModel {
-    Field getField();
+    FieldEntity getField();
     TankModel getPlayer();
     TankModel getEnemy();
 

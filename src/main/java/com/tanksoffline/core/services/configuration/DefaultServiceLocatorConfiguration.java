@@ -15,17 +15,17 @@ public abstract class DefaultServiceLocatorConfiguration implements ServiceLocat
     }
 
     @Override
-    public Map<Class<? extends Service>, Service> configureServices() {
-        return configureServicesRecursive(Service.class);
+    public Map<Class<? extends Service>, Service> configure() {
+        return configureServicesRecursively(Service.class);
     }
 
-    private Map<Class<? extends Service>, Service> configureServicesRecursive(
+    private Map<Class<? extends Service>, Service> configureServicesRecursively(
             Class<? extends Service> serviceClass) {
         Map<Class<? extends Service>, Service> subServiceMap = new HashMap<>();
         Set<? extends Class<? extends Service>> subServiceClasses = reflections.getSubTypesOf(serviceClass);
         for (Class<? extends Service> c : subServiceClasses) {
             subServiceMap.put(c, null);
-            subServiceMap.putAll(configureServicesRecursive(c));
+            subServiceMap.putAll(configureServicesRecursively(c));
         }
         return subServiceMap;
     }

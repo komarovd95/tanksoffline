@@ -1,25 +1,21 @@
 package com.tanksoffline.application.configuration;
 
-import com.tanksoffline.application.controllers.ApplicationController;
+import com.tanksoffline.application.app.ApplicationController;
 import com.tanksoffline.application.controllers.NavigationController;
 import com.tanksoffline.application.models.FieldModelImpl;
 import com.tanksoffline.application.models.UserModelImpl;
 import com.tanksoffline.application.models.core.FieldModel;
 import com.tanksoffline.application.models.core.UserModel;
 import com.tanksoffline.application.utils.Navigation;
-import com.tanksoffline.core.services.configuration.DIConfiguration;
+import com.tanksoffline.core.services.configuration.ServiceConfiguration;
 import com.tanksoffline.core.utils.Factory;
-import com.tanksoffline.core.services.ServiceLocator;
-import com.tanksoffline.core.services.ValidationService;
 import com.tanksoffline.core.utils.ProxyFactory;
 import com.tanksoffline.core.utils.SingletonFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ApplicationDIConfiguration implements DIConfiguration {
-    private static final ValidationService validationService = ServiceLocator.getInstance()
-            .getService(ValidationService.class);
+public class ApplicationDIConfiguration implements ServiceConfiguration<String, Factory<?>> {
     private Map<String, Factory<?>> configurationMap;
 
     public ApplicationDIConfiguration() {
