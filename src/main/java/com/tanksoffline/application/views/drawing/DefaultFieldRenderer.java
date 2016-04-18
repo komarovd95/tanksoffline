@@ -1,7 +1,7 @@
 package com.tanksoffline.application.views.drawing;
 
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.application.data.FieldCell;
 import com.tanksoffline.application.utils.BoundRenderer;
 import com.tanksoffline.application.utils.Renderer;
 import javafx.geometry.BoundingBox;
@@ -9,7 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 
-public class DefaultFieldRenderer implements Renderer<Field> {
+public class DefaultFieldRenderer implements Renderer<FieldEntity> {
     private BoundRenderer<FieldCell> cellRenderer;
 
     public DefaultFieldRenderer(BoundRenderer<FieldCell> cellRenderer) {
@@ -17,7 +17,7 @@ public class DefaultFieldRenderer implements Renderer<Field> {
     }
 
     @Override
-    public void render(Field field, GraphicsContext gc) {
+    public void render(FieldEntity field, GraphicsContext gc) {
         if (field == null) {
             gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
             return;

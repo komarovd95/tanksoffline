@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+        http://xmlns.jcp.org/xml/ns/persistence/orm_2_0.xsd" version="2.1">
+    <access>FIELD</access>
+    <mapped-superclass class="com.tanksoffline.core.data.DomainObject">
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+
+            <basic name="createdAt">
+                <column name="created_at"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+
+            <basic name="updatedAt">
+                <column name="updated_at"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+
+            <version name="version"/>
+        </attributes>
+    </mapped-superclass>
+
+    <entity class="com.tanksoffline.application.entities.FieldEntity">
+        <table name="fields"/>
+        <attributes>
+            <basic name="name">
+                <column name="field_name" length="20" nullable="false"/>
+            </basic>
+            <basic name="fieldCells">
+                <lob/>
+            </basic>
+            <many-to-one name="owner" target-entity="com.tanksoffline.application.entities.UserEntity">
+                <cascade><cascade-all/></cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    
+    <entity class="com.tanksoffline.application.entities.UserEntity">
+        <table name="users"/>
+        <attributes>
+            <basic name="login">
+                <column name="user_name" length="20" nullable="false" unique="true"/>
+            </basic>
+            <basic name="password">
+                <column name="user_pass" length="50" nullable="false"/>
+            </basic>
+            <basic name="userType">
+                <column name="user_type" length="10" nullable="false"/>
+                <enumerated>STRING</enumerated>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

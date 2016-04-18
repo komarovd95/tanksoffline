@@ -1,15 +1,16 @@
 package com.tanksoffline.core.services;
 
-import com.tanksoffline.core.services.configuration.DIConfiguration;
+import com.tanksoffline.core.services.configuration.ServiceConfiguration;
 import com.tanksoffline.core.utils.Factory;
 
 import java.util.Map;
 
 public class DIService implements Service {
+    private ServiceConfiguration<String, Factory<?>> configuration;
     private Map<String, Factory<?>> components;
 
-    public DIService(DIConfiguration configuration) {
-        components = configuration.configure();
+    public DIService(ServiceConfiguration<String, Factory<?>> configuration) {
+        this.configuration = configuration;
     }
 
     public <T> T getComponent(Class<T> componentClass) {
@@ -25,9 +26,13 @@ public class DIService implements Service {
     }
 
     @Override
-    public void start() {}
+    public void start() {
+        components = configuration.configure();
+    }
 
     @Override
-    public void shutdown() {}
+    public void shutdown() {
+        components = null;
+    }
 
 }

@@ -1,8 +1,8 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.utils.TableDataBuilder;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -16,25 +16,25 @@ import java.util.ResourceBundle;
 
 public class UsersViewController implements Initializable, PartialView {
     @FXML
-    private TableView<User> table;
+    private TableView<UserEntity> table;
 
     @FXML
-    private TableColumn<User, Long> idColumn;
+    private TableColumn<UserEntity, Long> idColumn;
 
     @FXML
-    private TableColumn<User, String> nameColumn;
+    private TableColumn<UserEntity, String> nameColumn;
 
     @FXML
-    private TableColumn<User, String> passColumn;
+    private TableColumn<UserEntity, String> passColumn;
 
     @FXML
-    private TableColumn<User, String> typeColumn;
+    private TableColumn<UserEntity, String> typeColumn;
 
     @FXML
-    private TableColumn<User, Date> createColumn;
+    private TableColumn<UserEntity, Date> createColumn;
 
     @FXML
-    private TableColumn<User, Date> updateColumn;
+    private TableColumn<UserEntity, Date> updateColumn;
 
     @FXML
     private TextField filterField;
@@ -54,7 +54,7 @@ public class UsersViewController implements Initializable, PartialView {
     @FXML
     private Button backBtn;
 
-    private ObservableList<User> users;
+    private ObservableList<UserEntity> userEntities;
 
     private UserActionController actionController;
 
@@ -74,13 +74,13 @@ public class UsersViewController implements Initializable, PartialView {
         passColumn.setCellValueFactory(param ->
                 new SimpleObjectProperty<>(param.getValue().getPassword()));
         typeColumn.setCellValueFactory(param ->
-                new SimpleObjectProperty<>(param.getValue().isManager() ? "Manager" : "User"));
+                new SimpleObjectProperty<>(param.getValue().isManager() ? "Manager" : "UserEntity"));
         createColumn.setCellValueFactory(param ->
                 new SimpleObjectProperty<>(param.getValue().getCreatedAt()));
         updateColumn.setCellValueFactory(param ->
                 new SimpleObjectProperty<>(param.getValue().getUpdatedAt()));
 
-        TableDataBuilder<User> tableDataBuilder = new TableDataBuilder<>();
+        TableDataBuilder<UserEntity> tableDataBuilder = new TableDataBuilder<>();
         tableDataBuilder
                 .setBuiltData(actionController.onFindAll())
                 .setFilter(filterField.textProperty(),
@@ -99,24 +99,24 @@ public class UsersViewController implements Initializable, PartialView {
             removeBtn.setDisable(willDisabled);
         });
 
-        users = tableDataBuilder.getBuiltData();
+        userEntities = tableDataBuilder.getBuiltData();
 
         backBtn.setOnAction(event -> UsersViewController.this.onBackClick());
     }
 
     public void onRemove() {
-        User currentUser = table.getSelectionModel().selectedItemProperty().get();
+        UserEntity currentUserEntity = table.getSelectionModel().selectedItemProperty().get();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Вы уверены, что хотите удалить пользователя " + currentUser.getLogin() + "?");
+                "Вы уверены, что хотите удалить пользователя " + currentUserEntity.getLogin() + "?");
         alert.showAndWait().filter(response -> response == ButtonType.OK)
                 .ifPresent(response -> {
                     try {
-                        if (currentUser.getLogin().equals(
+                        if (currentUserEntity.getLogin().equals(
                                 app.getUserModel().getLoggedUser().getLogin())) {
                             actionController.onDestroy().call();
                         }
-                        actionController.onRemove(currentUser).call();
-                        users.remove(currentUser);
+                        actionController.onRemove(currentUserEntity).call();
+                        userEntities.remove(currentUserEntity);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -124,10 +124,10 @@ public class UsersViewController implements Initializable, PartialView {
     }
 
     public void onChangeUser() {
-        User currentUser = table.getSelectionModel().selectedItemProperty().get();
-        app.getApplicationController().onUserChange(currentUser, () ->
-                users.set(table.getSelectionModel().getSelectedIndex(),
-                        app.getUserModel().findOne(currentUser.getId())));
+        UserEntity currentUserEntity = table.getSelectionModel().selectedItemProperty().get();
+        app.getApplicationController().onUserChange(currentUserEntity, () ->
+                userEntities.set(table.getSelectionModel().getSelectedIndex(),
+                        app.getUserModel().findOne(currentUserEntity.getId())));
     }
 
     public void onBackClick() {

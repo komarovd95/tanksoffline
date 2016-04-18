@@ -1,9 +1,8 @@
 package fields;
 
-import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.application.data.fields.FieldCell;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.application.data.FieldCell;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
 import org.junit.After;
@@ -28,7 +27,7 @@ import static org.junit.Assert.*;
 public class FieldTest {
     private static final Path RESOURCE_PATH = Paths.get("src/test/resources/tmp_field.data");
 
-    private Field field;
+    private FieldEntity field;
 
     @Before
     public void setUp() throws Exception {
@@ -38,7 +37,7 @@ public class FieldTest {
         PowerMockito.when(serviceLocatorMock.getService(DataService.class)).thenReturn(null);
         PowerMockito.when(ServiceLocator.getInstance()).thenReturn(serviceLocatorMock);
 
-        field = new Field(new User("Dave", "pass123", UserType.MANAGER), "Temple", 3, 2);
+        field = new FieldEntity(new UserEntity("Dave", "pass123", UserEntity.UserType.MANAGER), "Temple", 3, 2);
         field.addCell(0, 0, new FieldCell(true, true, true, true));
         field.addCell(0, 1, new FieldCell(false, true, true, true, 1));
         field.addCell(1, 0, new FieldCell(true, false, true, true));
@@ -58,7 +57,7 @@ public class FieldTest {
              ObjectInputStream inputStream = new ObjectInputStream(
                      Files.newInputStream(RESOURCE_PATH, StandardOpenOption.READ))) {
             outputStream.writeObject(field);
-            Field readObject = (Field) inputStream.readObject();
+            FieldEntity readObject = (FieldEntity) inputStream.readObject();
             assertEquals(field.toString(), readObject.toString());
         }
     }

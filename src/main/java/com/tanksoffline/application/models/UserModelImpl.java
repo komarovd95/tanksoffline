@@ -1,12 +1,11 @@
 package com.tanksoffline.application.models;
 
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.models.core.UserModel;
-import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.application.data.users.User;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
-import com.tanksoffline.core.utils.obs.Observable;
-import com.tanksoffline.core.utils.obs.SimpleObservable;
+import com.tanksoffline.core.utils.observer.Observable;
+import com.tanksoffline.core.utils.observer.SimpleProperty;
 import com.tanksoffline.core.utils.validation.Login;
 import com.tanksoffline.core.utils.validation.Password;
 
@@ -15,20 +14,20 @@ import java.util.Map;
 
 public class UserModelImpl implements UserModel {
     private final DataService dataService;
-    private Observable<User> loggedUser;
+    private Observable<UserEntity> loggedUser;
 
     public UserModelImpl() {
-        loggedUser = new SimpleObservable<>();
+        loggedUser = new SimpleProperty<>();
         dataService = ServiceLocator.getInstance().getService(DataService.class);
     }
 
     @Override
     public void login(@Login String login, @Password String password) {
-        List<User> userList = dataService.where(User.class, "login", login);
-        if (userList.size() == 1) {
-            User user = userList.get(0);
-            if (User.getPasswordDigest(password).equals(user.getPassword())) {
-                loggedUser.set(user);
+        List<UserEntity> userEntityList = dataService.findBy(UserEntity.class, "login", login);
+        if (userEntityList.size() == 1) {
+            UserEntity userEntity = userEntityList.get(0);
+            if (UserEntity.createPasswordDigest(password).equals(userEntity.getPassword())) {
+                loggedUser.set(userEntity);
             } else {
                 throw new IllegalArgumentException("Password is incorrect");
             }
@@ -39,9 +38,9 @@ public class UserModelImpl implements UserModel {
 
     @Override
     public void register(@Login String login, @Password String password, boolean asManager) {
-        User user = new User(login, password, (asManager) ? UserType.MANAGER : UserType.USER);
-        user.save();
-        loggedUser.set(user);
+        UserEntity userEntity = new UserEntity(login, password, (asManager) ? UserEntity.UserType.MANAGER : UserEntity.UserType.USER);
+        userEntity.save();
+        loggedUser.set(userEntity);
     }
 
     @Override
@@ -51,56 +50,56 @@ public class UserModelImpl implements UserModel {
     }
 
     @Override
-    public User getLoggedUser() {
+    public UserEntity getLoggedUser() {
         return loggedUser.get();
     }
 
     @Override
-    public Observable<User> getLoggedUserProperty() {
+    public Observable<UserEntity> getLoggedUserProperty() {
         return loggedUser;
     }
 
     @Override
-    public User findOne(Object value) {
-        return dataService.find(User.class, value);
+    public UserEntity findOne(Object value) {
+        return dataService.findById(UserEntity.class, value);
     }
 
     @Override
-    public List<User> findAll() {
-        return dataService.findAll(User.class);
+    public List<UserEntity> findAll() {
+        return dataService.findAll(UserEntity.class);
     }
 
     @Override
-    public List<User> findBy(Map<String, Object> params) {
-        return dataService.where(User.class, params);
+    public List<UserEntity> findBy(Map<String, Object> params) {
+        return dataService.findBy(UserEntity.class, params);
     }
 
     @Override
-    public User update(User user, Map<String, Object> values) {
+    public UserEntity update(UserEntity userEntity, Map<String, Object> values) {
         values.forEach((param, value) -> {
             switch (param) {
                 case "password":
-                    updatePassword(user, (String) value);
+                    updatePassword(userEntity, (String) value);
                     break;
                 case "userType":
-                    updateUserType(user, (boolean) value);
+                    updateUserType(userEntity, (boolean) value);
                     break;
             }
         });
-        user.update();
-        return user;
+        userEntity.update();
+        return userEntity;
     }
 
-    private void updatePassword(User user, @Password String password) {
-        user.setPassword(password);
+    private void updatePassword(UserEntity userEntity, @Password String password) {
+        userEntity.setPassword(password);
     }
 
-    private void updateUserType(User user, boolean asManager) {
-        user.setUserType(loggedUser.get(), (asManager) ? UserType.MANAGER : UserType.USER);
+    private void updateUserType(UserEntity userEntity, boolean asManager) {
+        userEntity.setUserType(loggedUser.get(), (asManager) ? UserEntity.UserType.MANAGER : UserEntity.UserType.USER);
     }
 
     @Override
-    public void delete(User user) {
-        user.remove();
+    public void delete(UserEntity userEntity) {
+        userEntity.remove();
     }
 }

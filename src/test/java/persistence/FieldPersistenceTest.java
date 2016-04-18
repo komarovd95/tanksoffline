@@ -1,9 +1,8 @@
 package persistence;
 
-import com.tanksoffline.application.utils.UserType;
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.application.data.fields.FieldCell;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.application.data.FieldCell;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.application.services.HibernateDataService;
 import com.tanksoffline.core.services.DataService;
@@ -17,9 +16,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class FieldPersistenceTest {
-    private User user;
+    private UserEntity userEntity;
     private DataService dataService;
-    private Field field;
+    private FieldEntity field;
 
     @Before
     public void setUp() throws Exception {
@@ -27,10 +26,10 @@ public class FieldPersistenceTest {
         dataService = ServiceLocator.getInstance().getService(HibernateDataService.class);
         dataService.start();
 
-        user = new User("Dave", "pass123", UserType.MANAGER);
-        dataService.save(user);
+        userEntity = new UserEntity("Dave", "pass123", UserEntity.UserType.MANAGER);
+        dataService.save(userEntity);
 
-        field = new Field(user, "Temple", 3, 2);
+        field = new FieldEntity(userEntity, "Temple", 3, 2);
         field.addCell(0, 0, new FieldCell(true, true, true, true));
         field.addCell(0, 1, new FieldCell(false, true, true, true, 1));
         field.addCell(1, 0, new FieldCell(true, false, true, true));
@@ -47,7 +46,7 @@ public class FieldPersistenceTest {
     public void testNameUniqueConstraint() throws Throwable {
         try {
             dataService.save(field);
-            dataService.save(new Field(user, "Temple"));
+            dataService.save(new FieldEntity(userEntity, "Temple"));
         } catch (Throwable t) {
             throw t.getCause();
         }
@@ -56,7 +55,7 @@ public class FieldPersistenceTest {
     @Test(expected = DataException.class)
     public void testNameLengthConstraint() throws Throwable {
         try {
-            dataService.save(new Field(user, "David Mark SpiderManJ")); // string length == 21
+            dataService.save(new FieldEntity(userEntity, "David Mark SpiderManJ")); // string length == 21
         } catch (Throwable t) {
             throw t.getCause();
         }
@@ -65,7 +64,7 @@ public class FieldPersistenceTest {
     @Test
     public void testBlobSerialization() {
         dataService.save(field);
-        Field foundObject = dataService.find(Field.class, 2L);
+        FieldEntity foundObject = dataService.findById(FieldEntity.class, 2L);
 
         assertEquals(field.getWidth(), foundObject.getWidth());
         assertEquals(field.getHeight(), foundObject.getHeight());

@@ -21,7 +21,7 @@ public class ServiceLocatorConfigurationTest {
 
     @Test
     public void testConfigureServices() {
-        Map<Class<? extends Service>, Service> serviceMap = slc.configureServices();
+        Map<Class<? extends Service>, Service> serviceMap = slc.configure();
         assertEquals(4, serviceMap.size());
     }
 

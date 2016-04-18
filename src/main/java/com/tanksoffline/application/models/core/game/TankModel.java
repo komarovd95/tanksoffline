@@ -1,7 +1,7 @@
 package com.tanksoffline.application.models.core.game;
 
-import com.tanksoffline.application.data.fields.Direction;
-import com.tanksoffline.core.utils.obs.Observable;
+import com.tanksoffline.application.utils.Direction;
+import com.tanksoffline.core.utils.observer.Observable;
 
 public interface TankModel extends Movable, Rotatable {
     Observable<Direction> getDirectionProperty();

@@ -1,11 +1,11 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
-import com.tanksoffline.application.controllers.ActionController;
+import com.tanksoffline.application.app.App;
+import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.application.controllers.FieldActionController;
-import com.tanksoffline.application.data.fields.Direction;
-import com.tanksoffline.application.data.fields.Field;
-import com.tanksoffline.application.data.fields.FieldCell;
+import com.tanksoffline.application.utils.Direction;
+import com.tanksoffline.application.entities.FieldEntity;
+import com.tanksoffline.application.data.FieldCell;
 import com.tanksoffline.application.utils.BoundRenderer;
 import com.tanksoffline.application.utils.Renderer;
 import com.tanksoffline.application.utils.TableDataBuilder;
@@ -36,13 +36,13 @@ import java.util.ResourceBundle;
 
 public class FieldsViewController implements FieldView {
     private App app;
-    private ActionController<Field> actionController;
-    private ObservableList<Field> fields;
-    private Renderer<Field> renderer;
+    private ActionController<FieldEntity> actionController;
+    private ObservableList<FieldEntity> fields;
+    private Renderer<FieldEntity> renderer;
     private ObjectProperty<Pair<Integer, Integer>> selectedCell;
 
     @FXML
-    private ListView<Field> fieldList;
+    private ListView<FieldEntity> fieldList;
 
     @FXML
     private Button createBtn;
@@ -89,7 +89,7 @@ public class FieldsViewController implements FieldView {
 
         backBtn.setOnAction(event -> FieldsViewController.this.onBackClick());
 
-        TableDataBuilder<Field> dataBuilder = new TableDataBuilder<>();
+        TableDataBuilder<FieldEntity> dataBuilder = new TableDataBuilder<>();
         dataBuilder.setBuiltData(actionController.onFindAll());
 
         fieldList.setItems(dataBuilder.build());
@@ -126,7 +126,7 @@ public class FieldsViewController implements FieldView {
         });
 
         canvas.setOnMouseClicked(event -> {
-            Field field = getCurrentField();
+            FieldEntity field = getCurrentField();
 
             if (field == null) return;
 
@@ -162,7 +162,7 @@ public class FieldsViewController implements FieldView {
             else if (source == rightTgl) direction = Direction.RIGHT;
             else return;
 
-            Field field = getCurrentField();
+            FieldEntity field = getCurrentField();
 
             if (newValue) {
                 field.setBorder(selectedCell.get().getKey(), selectedCell.get().getValue(), direction);
@@ -194,9 +194,9 @@ public class FieldsViewController implements FieldView {
 
     @Override
     public void onSaveClick() {
-        Service<Field> saveService = new Service<Field>() {
+        Service<FieldEntity> saveService = new Service<FieldEntity>() {
             @Override
-            protected Task<Field> createTask() {
+            protected Task<FieldEntity> createTask() {
                 return new TaskFactory<>(
                         actionController.onUpdate(getCurrentField(), null))
                         .create();
@@ -223,9 +223,9 @@ public class FieldsViewController implements FieldView {
 
     @Override
     public void onRemoveClick() {
-        Service<Field> removeService = new Service<Field>() {
+        Service<FieldEntity> removeService = new Service<FieldEntity>() {
             @Override
-            protected Task<Field> createTask() {
+            protected Task<FieldEntity> createTask() {
                 return new TaskFactory<>(actionController.onRemove(getCurrentField())).create();
             }
 
@@ -243,7 +243,7 @@ public class FieldsViewController implements FieldView {
         }
     }
 
-    private Field getCurrentField() {
+    private FieldEntity getCurrentField() {
         return fieldList.getSelectionModel().getSelectedItem();
     }
 

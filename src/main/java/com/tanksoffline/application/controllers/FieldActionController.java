@@ -1,14 +1,15 @@
 package com.tanksoffline.application.controllers;
 
-import com.tanksoffline.application.App;
-import com.tanksoffline.application.data.fields.Field;
+import com.tanksoffline.application.app.App;
+import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.models.core.FieldModel;
+import com.tanksoffline.core.mvc.ActionController;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class FieldActionController implements ActionController<Field>{
+public class FieldActionController implements ActionController<FieldEntity> {
     private FieldModel fieldModel;
 
     public FieldActionController() {
@@ -16,22 +17,22 @@ public class FieldActionController implements ActionController<Field>{
     }
 
     @Override
-    public Callable<Field> onCreate(Map<String, Object> values) {
+    public Callable<FieldEntity> onCreate(Map<String, Object> values) {
         return () -> fieldModel.create((String) values.get("name"), (int) values.get("size"));
     }
 
     @Override
-    public Callable<Field> onFind(Map<String, Object> values) {
+    public Callable<FieldEntity> onFind(Map<String, Object> values) {
         return null;
     }
 
     @Override
-    public Callable<Field> onUpdate(Field field, Map<String, Object> values) {
+    public Callable<FieldEntity> onUpdate(FieldEntity field, Map<String, Object> values) {
         return () -> fieldModel.update(field, values);
     }
 
     @Override
-    public Callable<Field> onRemove(Field field) {
+    public Callable<FieldEntity> onRemove(FieldEntity field) {
         return () -> {
             fieldModel.delete(field);
             return field;
@@ -39,22 +40,22 @@ public class FieldActionController implements ActionController<Field>{
     }
 
     @Override
-    public Callable<Field> onFindOne(Object id) {
+    public Callable<FieldEntity> onFindOne(Object id) {
         return null;
     }
 
     @Override
-    public Callable<List<Field>> onFindAll() {
+    public Callable<List<FieldEntity>> onFindAll() {
         return () -> fieldModel.findAll();
     }
 
     @Override
-    public Callable<Field> onConstruct() {
+    public Callable<FieldEntity> onConstruct() {
         return null;
     }
 
     @Override
-    public Callable<Field> onDestroy() {
+    public Callable<FieldEntity> onDestroy() {
         return null;
     }
 }

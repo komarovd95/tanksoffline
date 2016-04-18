@@ -1,9 +1,9 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
-import com.tanksoffline.application.controllers.ActionController;
+import com.tanksoffline.application.app.App;
+import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.application.controllers.FieldActionController;
-import com.tanksoffline.application.data.fields.Field;
+import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.utils.TaskFactory;
 import com.tanksoffline.core.services.ValidationService;
 import javafx.concurrent.Service;
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class FieldCreateViewController implements Initializable {
-    private Service<Field> fieldCreationService;
-    private ActionController<Field> actionController;
+    private Service<FieldEntity> fieldCreationService;
+    private ActionController<FieldEntity> actionController;
 
     @FXML
     private Label nameLabel;
@@ -45,9 +45,9 @@ public class FieldCreateViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fieldCreationService = new Service<Field>() {
+        fieldCreationService = new Service<FieldEntity>() {
             @Override
-            protected Task<Field> createTask() {
+            protected Task<FieldEntity> createTask() {
                 Map<String, Object> params = new HashMap<>();
                 params.put("name", nameValue.getText().trim());
                 params.put("size", (int) sizeSlider.getValue());

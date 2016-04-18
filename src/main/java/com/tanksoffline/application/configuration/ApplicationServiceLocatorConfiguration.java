@@ -24,9 +24,9 @@ public class ApplicationServiceLocatorConfiguration extends DefaultServiceLocato
         factoryMap.put(DataService.class, hibernateDataServiceFactory);
         factoryMap.put(HibernateDataService.class, hibernateDataServiceFactory);
         factoryMap.put(DIService.class, new SingletonFactory<>(
-                () -> new DIService(new ApplicationDIConfiguration())
-        ));
-        factoryMap.put(ValidationService.class, new SingletonFactory<>(ValidationService::new));
+                () -> new DIService(new ApplicationDIConfiguration())));
+        factoryMap.put(ValidationService.class, new SingletonFactory<>(
+                () -> new ValidationService(new ApplicationValidationConfiguration())));
         return factoryMap;
     }
 }

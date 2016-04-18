@@ -1,8 +1,8 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.utils.TaskFactory;
 import com.tanksoffline.core.services.ValidationService;
 import com.tanksoffline.core.utils.Factory;
@@ -25,8 +25,8 @@ import java.util.ResourceBundle;
 
 public class LoginViewController implements Initializable {
     private UserActionController actionController;
-    private Factory<Service<User>> loginServiceFactory;
-    private Factory<Service<User>> registerServiceFactory;
+    private Factory<Service<UserEntity>> loginServiceFactory;
+    private Factory<Service<UserEntity>> registerServiceFactory;
 
     @FXML
     private Button loginBtn;
@@ -73,9 +73,9 @@ public class LoginViewController implements Initializable {
         };
 
         loginServiceFactory = new SingletonFactory<>(() ->
-                new Service<User>() {
+                new Service<UserEntity>() {
                     @Override
-                    protected Task<User> createTask() {
+                    protected Task<UserEntity> createTask() {
                         Map<String, Object> params = new HashMap<>();
                         params.put("login", loginValue.getText().trim());
                         params.put("password", passValue.getText().trim());
@@ -114,9 +114,9 @@ public class LoginViewController implements Initializable {
         );
 
         registerServiceFactory = new SingletonFactory<>(() ->
-                new Service<User>() {
+                new Service<UserEntity>() {
                     @Override
-                    protected Task<User> createTask() {
+                    protected Task<UserEntity> createTask() {
                         Map<String, Object> params = new HashMap<>();
                         params.put("login", loginValue.getText().trim());
                         params.put("password", passValue.getText().trim());
@@ -163,7 +163,7 @@ public class LoginViewController implements Initializable {
     }
 
     public void onLogin() {
-        Service<User> loginService = loginServiceFactory.create();
+        Service<UserEntity> loginService = loginServiceFactory.create();
         if (loginService.getState() == Worker.State.READY) {
             loginService.start();
         } else {
@@ -172,7 +172,7 @@ public class LoginViewController implements Initializable {
     }
 
     public void onSignUp() {
-        Service<User> registerService = registerServiceFactory.create();
+        Service<UserEntity> registerService = registerServiceFactory.create();
         if (registerService.getState() == Worker.State.READY) {
             registerService.start();
         } else {

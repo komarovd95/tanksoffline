@@ -5,7 +5,6 @@ import com.tanksoffline.core.services.Service;
 
 import java.util.Map;
 
-public interface ServiceLocatorConfiguration {
-    Map<Class<? extends Service>, Service> configureServices();
+public interface ServiceLocatorConfiguration extends ServiceConfiguration<Class<? extends Service>, Service> {
     Map<Class<? extends Service>, Factory<? extends Service>> configureFactories();
 }

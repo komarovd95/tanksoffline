@@ -1,6 +1,6 @@
 package com.tanksoffline.application.utils;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.core.utils.Factory;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

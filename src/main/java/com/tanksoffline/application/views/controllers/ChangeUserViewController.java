@@ -1,8 +1,8 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.App;
+import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.data.users.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.utils.TaskFactory;
 import com.tanksoffline.core.services.ValidationService;
 import javafx.concurrent.Service;
@@ -33,7 +33,7 @@ public class ChangeUserViewController implements Initializable {
     private Label passLabel;
 
     private UserActionController actionController;
-    private User currentUser;
+    private UserEntity currentUserEntity;
     private Stage currentStage;
 
     public ChangeUserViewController() {
@@ -49,7 +49,7 @@ public class ChangeUserViewController implements Initializable {
                     Map<String, Object> params = new HashMap<>();
                     params.put("password", passToken);
                     params.put("userType", isManager.isSelected());
-                    actionController.onUpdate(currentUser, params).call();
+                    actionController.onUpdate(currentUserEntity, params).call();
                     return null;
                 }).create();
             }
@@ -91,11 +91,11 @@ public class ChangeUserViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        currentUser = App.getInstance().getNavigation().getNavigationInfo();
+        currentUserEntity = App.getInstance().getNavigation().getNavigationInfo();
         passValue.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && currentStage == null) {
                 currentStage = (Stage) passValue.getScene().getWindow();
-                isManager.setSelected(currentUser.isManager());
+                isManager.setSelected(currentUserEntity.isManager());
             }
         });
     }

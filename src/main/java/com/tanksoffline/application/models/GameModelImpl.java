@@ -1,21 +1,21 @@
 package com.tanksoffline.application.models;
 
-import com.tanksoffline.application.data.fields.Direction;
-import com.tanksoffline.application.data.fields.Field;
+import com.tanksoffline.application.utils.Direction;
+import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.models.core.game.GameModel;
 import com.tanksoffline.application.models.core.game.TankModel;
-import com.tanksoffline.core.utils.obs.Observable;
-import com.tanksoffline.core.utils.obs.SimpleObservable;
+import com.tanksoffline.core.utils.observer.Observable;
+import com.tanksoffline.core.utils.observer.SimpleProperty;
 
 public class GameModelImpl implements GameModel {
-    private Field field;
+    private FieldEntity field;
     private TankModel playerModel;
     private TankModel enemyModel;
     private Observable<TankModel> winnerProperty;
 
-    public GameModelImpl(Field field, int x1, int y1, int x2, int y2) {
+    public GameModelImpl(FieldEntity field, int x1, int y1, int x2, int y2) {
         this.field = field;
-        this.winnerProperty = new SimpleObservable<>();
+        this.winnerProperty = new SimpleProperty<>();
 
         this.playerModel = new TankModelImpl(x1, y1, 100, 10, "/images/player.png");
         setStartDirection(playerModel);
@@ -34,7 +34,7 @@ public class GameModelImpl implements GameModel {
     }
 
     @Override
-    public Field getField() {
+    public FieldEntity getField() {
         return field;
     }
 
