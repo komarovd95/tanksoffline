@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="953.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Canvas fx:id="canvas" height="800.0" width="800.0" StackPane.alignment="TOP_CENTER">
+      <Canvas fx:id="canvas" height="600.0" width="600.0" StackPane.alignment="TOP_CENTER">
          <StackPane.margin>
             <Insets bottom="40.0" top="40.0" />
          </StackPane.margin>
