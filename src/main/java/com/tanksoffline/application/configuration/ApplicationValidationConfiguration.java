@@ -7,15 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApplicationValidationConfiguration implements ServiceConfiguration<String, Validator<?>> {
-    private Map<String, Validator<?>> validatorMap;
-
-    public ApplicationValidationConfiguration() {
-        this.validatorMap = new HashMap<>();
-    }
-
-
     @Override
     public Map<String, Validator<?>> configure() {
+        Map<String, Validator<?>> validatorMap = new HashMap<>();
+
+
         return validatorMap;
     }
 }

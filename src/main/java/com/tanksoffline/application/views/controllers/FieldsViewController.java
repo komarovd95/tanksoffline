@@ -1,6 +1,7 @@
 package com.tanksoffline.application.views.controllers;
 
 import com.tanksoffline.application.app.App;
+import com.tanksoffline.application.data.Field;
 import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.application.controllers.FieldActionController;
 import com.tanksoffline.application.utils.Direction;
@@ -36,7 +37,7 @@ import java.util.ResourceBundle;
 
 public class FieldsViewController implements FieldView {
     private App app;
-    private ActionController<FieldEntity> actionController;
+    private ActionController<Field> actionController;
     private ObservableList<FieldEntity> fields;
     private Renderer<FieldEntity> renderer;
     private ObjectProperty<Pair<Integer, Integer>> selectedCell;
@@ -82,7 +83,7 @@ public class FieldsViewController implements FieldView {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        createBtn.setDisable(!app.getUserModel().getLoggedUser().isManager());
+        createBtn.setDisable(!app.getLoggedUserProperty().get().isManager());
         editBtn.setDisable(true);
         removeBtn.setDisable(true);
         brokeInterface(true);
@@ -141,7 +142,7 @@ public class FieldsViewController implements FieldView {
 
         selectedCell.addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                FieldCell cell = getCurrentField().getCell(newValue.getKey(), newValue.getValue());
+                FieldCell cell = getCurrentField().getFieldCell(newValue.getKey(), newValue.getValue());
 
                 if (!topTgl.isDisabled()) topTgl.setSelected(cell.hasBorder(Direction.TOP));
                 if (!botTgl.isDisabled()) botTgl.setSelected(cell.hasBorder(Direction.BOTTOM));
@@ -198,8 +199,7 @@ public class FieldsViewController implements FieldView {
             @Override
             protected Task<FieldEntity> createTask() {
                 return new TaskFactory<>(
-                        actionController.onUpdate(getCurrentField(), null))
-                        .create();
+                        actionController.onUpdate(getCurrentField(), null)).create();
             }
 
             @Override
@@ -226,7 +226,8 @@ public class FieldsViewController implements FieldView {
         Service<FieldEntity> removeService = new Service<FieldEntity>() {
             @Override
             protected Task<FieldEntity> createTask() {
-                return new TaskFactory<>(actionController.onRemove(getCurrentField())).create();
+                ActionController<Field> actionController = new FieldActionController(getCurrentField());
+                return new TaskFactory<>(actionController.onRemove()).create();
             }
 
             @Override

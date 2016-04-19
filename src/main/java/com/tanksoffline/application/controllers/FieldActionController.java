@@ -1,6 +1,7 @@
 package com.tanksoffline.application.controllers;
 
 import com.tanksoffline.application.app.App;
+import com.tanksoffline.application.data.Field;
 import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.models.core.FieldModel;
 import com.tanksoffline.core.mvc.ActionController;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class FieldActionController implements ActionController<FieldEntity> {
+public class FieldActionController implements ActionController<Field> {
     private FieldModel fieldModel;
 
     public FieldActionController() {
@@ -23,6 +24,16 @@ public class FieldActionController implements ActionController<FieldEntity> {
 
     @Override
     public Callable<FieldEntity> onFind(Map<String, Object> values) {
+        return null;
+    }
+
+    @Override
+    public Callable<Field> onUpdate(Field field, Map<String, Object> values) {
+        return null;
+    }
+
+    @Override
+    public Callable<Field> onRemove() {
         return null;
     }
 

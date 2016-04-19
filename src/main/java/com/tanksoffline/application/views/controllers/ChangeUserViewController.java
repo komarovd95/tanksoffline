@@ -1,10 +1,10 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.entities.UserEntity;
+import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.utils.TaskFactory;
-import com.tanksoffline.core.services.ValidationService;
+import com.tanksoffline.core.mvc.ActionController;
+import com.tanksoffline.core.validation.ValidationContextException;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -13,10 +13,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import javax.validation.ValidationException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,16 +30,16 @@ public class ChangeUserViewController implements Initializable {
     @FXML
     private Label passLabel;
 
-    private UserActionController actionController;
-    private UserEntity currentUserEntity;
-    private Stage currentStage;
+    private ActionController<User> actionController;
+    private User currentUser;
 
-    public ChangeUserViewController() {
-        this.actionController = new UserActionController();
+    public ChangeUserViewController(User currentUser) {
+        this.currentUser = currentUser;
+        this.actionController = new UserActionController(currentUser);
     }
 
     public void onAccept() {
-        String passToken = (passValue.getText().equals("")) ? null : passValue.getText();
+        String passToken = ("".equals(passValue.getText())) ? null : passValue.getText().trim();
         new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -49,7 +47,7 @@ public class ChangeUserViewController implements Initializable {
                     Map<String, Object> params = new HashMap<>();
                     params.put("password", passToken);
                     params.put("userType", isManager.isSelected());
-                    actionController.onUpdate(currentUserEntity, params).call();
+                    actionController.onUpdate(params).call();
                     return null;
                 }).create();
             }
@@ -57,18 +55,16 @@ public class ChangeUserViewController implements Initializable {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                currentStage.getOnCloseRequest().handle(
-                        new WindowEvent(currentStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                onBack();
             }
 
             @Override
             protected void failed() {
                 Throwable t = exceptionProperty().get();
-                if (t instanceof ValidationException) {
-                    ValidationService service = App.getService(ValidationService.class);
-                    Map<String, String> errors = service.getErrorClasses();
+                if (t instanceof ValidationContextException) {
+                    Map<String, String> errors = ((ValidationContextException) t).getErrors();
 
-                    String message = errors.get("Password");
+                    String message = errors.get("password");
                     if (message != null) {
                         passLabel.setText(message);
                         passLabel.setTextFill(Color.rgb(230, 40, 40));
@@ -81,7 +77,8 @@ public class ChangeUserViewController implements Initializable {
     }
 
     public void onBack() {
-        currentStage.close();
+        passValue.getScene().getWindow().getOnCloseRequest().handle(
+                new WindowEvent(passValue.getScene().getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     public void onKeyTyped() {
@@ -91,12 +88,6 @@ public class ChangeUserViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        currentUserEntity = App.getInstance().getNavigation().getNavigationInfo();
-        passValue.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && currentStage == null) {
-                currentStage = (Stage) passValue.getScene().getWindow();
-                isManager.setSelected(currentUserEntity.isManager());
-            }
-        });
+        isManager.setSelected(currentUser.isManager());
     }
 }

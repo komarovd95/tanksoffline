@@ -2,7 +2,6 @@ package services;
 
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
 import com.tanksoffline.application.entities.UserEntity;
-import com.tanksoffline.application.services.HibernateDataService;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.ServiceLocator;
 import org.junit.Test;

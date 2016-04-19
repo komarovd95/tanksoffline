@@ -1,13 +1,15 @@
 package com.tanksoffline.application.app;
 
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
-import com.tanksoffline.application.models.core.UserModel;
+import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.models.core.game.GameModel;
+import com.tanksoffline.application.services.LoginService;
 import com.tanksoffline.application.utils.Navigation;
 import com.tanksoffline.core.services.DataService;
 import com.tanksoffline.core.services.Service;
 import com.tanksoffline.core.services.DIService;
 import com.tanksoffline.core.services.ServiceLocator;
+import com.tanksoffline.core.utils.observer.Property;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -76,8 +78,8 @@ public class App extends Application {
         return primaryStage;
     }
 
-    public UserModel getUserModel() {
-        return ServiceLocator.getInstance().getService(DIService.class).getComponent(UserModel.class);
+    public Property<User> getLoggedUserProperty() {
+        return getService(LoginService.class).getLoggedUserProperty();
     }
 
     public GameModel getGameModel() {

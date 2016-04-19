@@ -6,6 +6,7 @@ import com.tanksoffline.application.models.GameModelImpl;
 import com.tanksoffline.application.models.core.game.GameModel;
 import com.tanksoffline.application.utils.ResourceFactory;
 import com.tanksoffline.application.utils.TaskFactory;
+import com.tanksoffline.application.views.controllers.ChangeUserViewController;
 import com.tanksoffline.application.views.controllers.ChooseFieldViewController;
 import com.tanksoffline.application.views.controllers.FieldsViewController;
 import com.tanksoffline.application.views.controllers.GameViewController;
@@ -68,7 +69,7 @@ public class ApplicationController {
         loginStage.show();
         loginStage.setResizable(false);
 
-        app.getUserModel().getLoggedUserProperty()
+        app.getLoggedUserProperty()
                 .addObserver((observable, oldValue, newValue) ->
                         Platform.runLater(() -> {
                             if (newValue != null) {
@@ -90,7 +91,7 @@ public class ApplicationController {
     private void onMainScreen() throws Exception {
         Stage primaryStage = app.getPrimaryStage();
         primaryStage.setTitle("TanksOffline [" +
-                app.getUserModel().getLoggedUser().getLogin() + "]");
+                app.getLoggedUserProperty().get().getLogin() + "]");
 
         Parent root = new ResourceFactory("/views/menu.fxml").create();
 
@@ -118,8 +119,13 @@ public class ApplicationController {
         // TODO
         app.getNavigation().setNavigationInfo(currentUserEntity);
 
-        ResourceFactory factory = new ResourceFactory("/views/change_user.fxml");
-        changeStage.setScene(new Scene(factory.create()));
+        FXMLLoader loader = new ResourceFactory("/views/change_user.fxml").getLoader();
+        loader.setController(new ChangeUserViewController(currentUserEntity));
+        try {
+            changeStage.setScene(new Scene(loader.load()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         changeStage.setOnCloseRequest(event -> {
             changeStage.close();

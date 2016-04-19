@@ -2,9 +2,9 @@ package com.tanksoffline.application.views.controllers;
 
 import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.entities.UserEntity;
-import com.tanksoffline.application.models.core.UserModel;
+import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.utils.TaskFactory;
+import com.tanksoffline.core.mvc.ActionController;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -18,22 +18,21 @@ import java.util.ResourceBundle;
 
 public class MenuViewController implements Initializable {
     private App app;
-    private UserModel userModel;
-    private UserActionController actionController;
+    private User user;
+    private ActionController<User> actionController;
 
     @FXML
     private Button usersBtn;
 
     public MenuViewController() {
         this.app = App.getInstance();
-        this.userModel = app.getUserModel();
-        this.actionController = new UserActionController();
+        this.user = app.getLoggedUserProperty().get();
+        this.actionController = new UserActionController(this.user);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        UserEntity loggedUserEntity = userModel.getLoggedUser();
-        if (!loggedUserEntity.isManager()) {
+        if (!user.isManager()) {
             ((VBox) usersBtn.getParent()).getChildren().remove(usersBtn);
         }
     }
@@ -43,9 +42,9 @@ public class MenuViewController implements Initializable {
     }
 
     public void onLogoutClick() {
-        new Service<UserEntity>() {
+        new Service<User>() {
             @Override
-            protected Task<UserEntity> createTask() {
+            protected Task<User> createTask() {
                 return new TaskFactory<>(actionController.onDestroy()).create();
             }
         }.start();

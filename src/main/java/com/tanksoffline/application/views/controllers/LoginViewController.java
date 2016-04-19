@@ -1,12 +1,12 @@
 package com.tanksoffline.application.views.controllers;
 
-import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
-import com.tanksoffline.application.entities.UserEntity;
+import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.utils.TaskFactory;
-import com.tanksoffline.core.services.ValidationService;
+import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.core.utils.Factory;
 import com.tanksoffline.core.utils.SingletonFactory;
+import com.tanksoffline.core.validation.ValidationContextException;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
@@ -17,16 +17,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import org.hibernate.exception.ConstraintViolationException;
 
-import javax.validation.ValidationException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 public class LoginViewController implements Initializable {
-    private UserActionController actionController;
-    private Factory<Service<UserEntity>> loginServiceFactory;
-    private Factory<Service<UserEntity>> registerServiceFactory;
+    private ActionController<User> actionController;
+    private Factory<Service<User>> loginServiceFactory;
+    private Factory<Service<User>> registerServiceFactory;
 
     @FXML
     private Button loginBtn;
@@ -73,9 +72,9 @@ public class LoginViewController implements Initializable {
         };
 
         loginServiceFactory = new SingletonFactory<>(() ->
-                new Service<UserEntity>() {
+                new Service<User>() {
                     @Override
-                    protected Task<UserEntity> createTask() {
+                    protected Task<User> createTask() {
                         Map<String, Object> params = new HashMap<>();
                         params.put("login", loginValue.getText().trim());
                         params.put("password", passValue.getText().trim());
@@ -86,13 +85,12 @@ public class LoginViewController implements Initializable {
                     protected void failed() {
                         super.failed();
                         Throwable t = this.exceptionProperty().get();
-                        ValidationService service = App.getService(ValidationService.class);
-                        if (t instanceof ValidationException) {
-                            fireError();
+                        if (t instanceof ValidationContextException) {
+                            fireError((ValidationContextException) t);
                         } else if (t instanceof IllegalStateException) {
-                            setError(loginLabel, service.getErrorMessage("incorrect_login"));
-                        } else if (t instanceof IllegalArgumentException) {
-                            setError(passLabel, service.getErrorMessage("incorrect_pass"));
+                            setError(loginLabel, t.getMessage());
+                        } else if (t instanceof  IllegalArgumentException) {
+                            setError(passLabel, t.getMessage());
                         } else {
                             throw new RuntimeException(t);
                         }
@@ -114,9 +112,9 @@ public class LoginViewController implements Initializable {
         );
 
         registerServiceFactory = new SingletonFactory<>(() ->
-                new Service<UserEntity>() {
+                new Service<User>() {
                     @Override
-                    protected Task<UserEntity> createTask() {
+                    protected Task<User> createTask() {
                         Map<String, Object> params = new HashMap<>();
                         params.put("login", loginValue.getText().trim());
                         params.put("password", passValue.getText().trim());
@@ -128,11 +126,10 @@ public class LoginViewController implements Initializable {
                     protected void failed() {
                         super.failed();
                         Throwable t = this.exceptionProperty().get();
-                        ValidationService service = App.getService(ValidationService.class);
-                        if (t instanceof ValidationException) {
-                            fireError();
+                        if (t instanceof ValidationContextException) {
+                            fireError((ValidationContextException) t);
                         } else if (t.getCause() instanceof ConstraintViolationException) {
-                            setError(loginLabel, service.getErrorMessage("login_exist"));
+                            setError(loginLabel, "Логин уже существует");
                         } else {
                             throw new RuntimeException(t);
                         }
@@ -163,7 +160,7 @@ public class LoginViewController implements Initializable {
     }
 
     public void onLogin() {
-        Service<UserEntity> loginService = loginServiceFactory.create();
+        Service<User> loginService = loginServiceFactory.create();
         if (loginService.getState() == Worker.State.READY) {
             loginService.start();
         } else {
@@ -172,7 +169,7 @@ public class LoginViewController implements Initializable {
     }
 
     public void onSignUp() {
-        Service<UserEntity> registerService = registerServiceFactory.create();
+        Service<User> registerService = registerServiceFactory.create();
         if (registerService.getState() == Worker.State.READY) {
             registerService.start();
         } else {
@@ -180,16 +177,15 @@ public class LoginViewController implements Initializable {
         }
     }
 
-    private void fireError() {
-        ValidationService service = App.getService(ValidationService.class);
-        Map<String, String> errors = service.getErrorClasses();
+    private void fireError(ValidationContextException e) {
+        Map<String, String> errors = e.getErrors();
 
-        String message = errors.get("Login");
+        String message = errors.get("login");
         if (message != null) {
             setError(loginLabel, message);
         }
 
-        message = errors.get("Password");
+        message = errors.get("password");
         if (message != null) {
             setError(passLabel, message);
         }

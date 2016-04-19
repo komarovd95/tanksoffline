@@ -2,8 +2,11 @@ package com.tanksoffline.application.views.controllers;
 
 import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.controllers.UserActionController;
+import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.entities.UserEntity;
+import com.tanksoffline.application.entities.search.UserSearch;
 import com.tanksoffline.application.utils.TableDataBuilder;
+import com.tanksoffline.core.mvc.ActionController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,7 +15,9 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class UsersViewController implements Initializable, PartialView {
     @FXML
@@ -56,12 +61,9 @@ public class UsersViewController implements Initializable, PartialView {
 
     private ObservableList<UserEntity> userEntities;
 
-    private UserActionController actionController;
-
     private App app;
 
     public UsersViewController() {
-        this.actionController = new UserActionController();
         this.app = App.getInstance();
     }
 
@@ -82,7 +84,10 @@ public class UsersViewController implements Initializable, PartialView {
 
         TableDataBuilder<UserEntity> tableDataBuilder = new TableDataBuilder<>();
         tableDataBuilder
-                .setBuiltData(actionController.onFindAll())
+                .setBuiltData(() -> {
+                    List<? extends User> users = new UserSearch().findAll();
+                    return users.stream().map(u -> (UserEntity) u).collect(Collectors.toList());
+                })
                 .setFilter(filterField.textProperty(),
                         (u, s) -> s == null || "".equals(s) || u.getLogin().contains(s))
                 .setFilter(userShown.selectedProperty(),
@@ -94,7 +99,7 @@ public class UsersViewController implements Initializable, PartialView {
         table.setItems(tableDataBuilder.build());
         table.setPlaceholder(new Label("Нет данных"));
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean willDisabled = newValue == null;
+            boolean willDisabled = (newValue == null);
             updateBtn.setDisable(willDisabled);
             removeBtn.setDisable(willDisabled);
         });
@@ -111,11 +116,11 @@ public class UsersViewController implements Initializable, PartialView {
         alert.showAndWait().filter(response -> response == ButtonType.OK)
                 .ifPresent(response -> {
                     try {
-                        if (currentUserEntity.getLogin().equals(
-                                app.getUserModel().getLoggedUser().getLogin())) {
-                            actionController.onDestroy().call();
+                        ActionController<User> actionController = new UserActionController(currentUserEntity);
+                        actionController.onRemove().call();
+                        if (app.getLoggedUserProperty().get() == currentUserEntity) {
+                            actionController.onDestroy();
                         }
-                        actionController.onRemove(currentUserEntity).call();
                         userEntities.remove(currentUserEntity);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -127,10 +132,6 @@ public class UsersViewController implements Initializable, PartialView {
         UserEntity currentUserEntity = table.getSelectionModel().selectedItemProperty().get();
         app.getApplicationController().onUserChange(currentUserEntity, () ->
                 userEntities.set(table.getSelectionModel().getSelectedIndex(),
-                        app.getUserModel().findOne(currentUserEntity.getId())));
-    }
-
-    public void onBackClick() {
-        app.getNavigation().back();
+                        (UserEntity) new UserSearch().findOne(currentUserEntity.getId())));
     }
 }

@@ -1,11 +1,10 @@
 package com.tanksoffline.application.models;
 
+import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.entities.UserEntity;
-import com.tanksoffline.core.mvc.ActiveModel;
-import com.tanksoffline.core.services.DataService;
+import com.tanksoffline.application.services.LoginService;
+import com.tanksoffline.core.mvc.BaseModel;
 import com.tanksoffline.core.services.ServiceLocator;
-import com.tanksoffline.core.utils.observer.Observer;
-import com.tanksoffline.core.utils.observer.Property;
 import com.tanksoffline.core.utils.observer.SimpleProperty;
 import com.tanksoffline.core.validation.ValidationContext;
 import com.tanksoffline.core.validation.ValidationContextBuilder;
@@ -13,12 +12,18 @@ import com.tanksoffline.core.validation.ValidationContextException;
 
 import java.util.List;
 
-public class UserActiveModel extends UserEntity implements ActiveModel<UserEntity> {
-    private static final DataService dataService = ServiceLocator.getInstance().getService(DataService.class);
-
-    private Property<UserEntity> userProperty;
-
+public class UserActiveModel extends BaseModel<User> implements User {
     public UserActiveModel(String login, String password, UserType userType) {
+        this(login, password);
+        this.modelProperty = new SimpleProperty<>(new UserEntity(login, password, userType));
+    }
+
+    public UserActiveModel(User user) {
+        this(user.getLogin(), user.getPassword());
+        this.modelProperty = new SimpleProperty<>(user);
+    }
+
+    private UserActiveModel(String login, String password) {
         ValidationContext context = ValidationContextBuilder.create()
                 .validate("login", login)
                 .validate("password", password)
@@ -26,92 +31,68 @@ public class UserActiveModel extends UserEntity implements ActiveModel<UserEntit
         if (!context.isValid()) {
             throw new ValidationContextException(context.getErrorMessages());
         }
-
-        userProperty = new SimpleProperty<>(new UserEntity(login, password, userType));
-    }
-
-    public UserActiveModel(UserEntity userEntity) {
-        this.userProperty = new SimpleProperty<>(userEntity);
-    }
-
-    @Override
-    public UserEntity save() {
-        userProperty.set(dataService.save(userProperty.get()));
-        return userProperty.get();
-    }
-
-    @Override
-    public UserEntity update() {
-        userProperty.set(dataService.update(userProperty.get()));
-        return userProperty.get();
-    }
-
-    @Override
-    public UserEntity remove() {
-        userProperty.set(dataService.remove(userProperty.get()));
-        return userProperty.get();
-    }
-
-    @Override
-    public UserEntity refresh() {
-        userProperty.set(dataService.refresh(userProperty.get()));
-        return userProperty.get();
-    }
-
-    @Override
-    public void addObserver(Observer<? super UserEntity> observer) {
-        userProperty.addObserver(observer);
-    }
-
-    @Override
-    public void removeObserver(Observer<? super UserEntity> observer) {
-        userProperty.removeObserver(observer);
     }
 
     @Override
     public String getLogin() {
-        return userProperty.get().getLogin();
+        return modelProperty.get().getLogin();
     }
 
     @Override
     public void setLogin(String login) {
-        userProperty.get().setLogin(login);
-        userProperty.set(userProperty.get());
+        ValidationContext context = ValidationContextBuilder.create()
+                .validate("login", login)
+                .build();
+        if (!context.isValid()) {
+            throw new ValidationContextException(context.getErrorMessages());
+        }
+
+        modelProperty.get().setLogin(login);
+        modelProperty.set(modelProperty.get());
     }
 
     @Override
     public String getPassword() {
-        return userProperty.get().getPassword();
+        return modelProperty.get().getPassword();
     }
 
     @Override
     public void setPassword(String password) {
-        userProperty.get().setPassword(password);
-        userProperty.set(userProperty.get());
+        ValidationContext context = ValidationContextBuilder.create()
+                .validate("password", password)
+                .build();
+        if (!context.isValid()) {
+            throw new ValidationContextException(context.getErrorMessages());
+        }
+
+        modelProperty.get().setPassword(password);
+        modelProperty.set(modelProperty.get());
     }
 
     @Override
     public UserType getUserType() {
-        return userProperty.get().getUserType();
+        return modelProperty.get().getUserType();
     }
 
     @Override
     public void setUserType(UserType userType) {
-        userProperty.get().setUserType(userType);
-        userProperty.set(userProperty.get());
+        modelProperty.get().setUserType(userType);
+        modelProperty.set(modelProperty.get());
     }
 
     @Override
     public boolean isManager() {
-        return userProperty.get().isManager();
+        return modelProperty.get().isManager();
     }
 
-    public static ActiveModel<UserEntity> signIn(String login, String password) {
+    public static UserActiveModel signIn(String login, String password) {
         List<UserEntity> userEntities = dataService.findBy(UserEntity.class, "login", login);
         if (userEntities.size() == 1) {
-            UserEntity userEntity = userEntities.get(0);
-            if (userEntity.getPassword().equals(UserEntity.createPasswordDigest(password))) {
-                return new UserActiveModel(userEntity);
+            User userEntity = userEntities.get(0);
+            if (userEntity.getPassword().equals(User.createPasswordDigest(password))) {
+                UserActiveModel activeModel = new UserActiveModel(userEntity);
+                ServiceLocator.getInstance().getService(LoginService.class).signIn(activeModel);
+                return activeModel;
             } else {
                 throw new IllegalArgumentException("Password is incorrect");
             }
@@ -120,9 +101,10 @@ public class UserActiveModel extends UserEntity implements ActiveModel<UserEntit
         }
     }
 
-    public static ActiveModel<UserEntity> signUp(String login, String password, UserEntity.UserType userType) {
-        ActiveModel<UserEntity> userActiveModel = new UserActiveModel(login, password, userType);
+    public static UserActiveModel signUp(String login, String password, UserEntity.UserType userType) {
+        UserActiveModel userActiveModel = new UserActiveModel(login, password, userType);
         userActiveModel.save();
+        ServiceLocator.getInstance().getService(LoginService.class).signIn(userActiveModel);
         return userActiveModel;
     }
 }

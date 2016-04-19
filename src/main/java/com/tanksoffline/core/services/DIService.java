@@ -2,6 +2,7 @@ package com.tanksoffline.core.services;
 
 import com.tanksoffline.core.services.configuration.ServiceConfiguration;
 import com.tanksoffline.core.utils.Factory;
+import com.tanksoffline.core.utils.SingletonFactory;
 
 import java.util.Map;
 
@@ -23,6 +24,17 @@ public class DIService implements Service {
             throw new IllegalArgumentException("Cannot look up component with name " + componentName);
         }
         return (T) components.get(componentName).create();
+    }
+
+    public void addComponent(String componentName, Factory<?> componentProducer) {
+        if (components.containsKey(componentName)) {
+            throw new IllegalArgumentException("Components pool already has component with name " + componentName);
+        }
+        components.put(componentName, componentProducer);
+    }
+
+    public void addComponent(String componentName, Object singletonComponent) {
+        addComponent(componentName, new SingletonFactory<>(() -> singletonComponent));
     }
 
     @Override
