@@ -2,7 +2,6 @@ package com.tanksoffline.application.models;
 
 import com.tanksoffline.application.data.Field;
 import com.tanksoffline.application.data.FieldCell;
-import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.core.mvc.BaseModel;
@@ -12,7 +11,17 @@ import com.tanksoffline.core.validation.ValidationContextBuilder;
 import com.tanksoffline.core.validation.ValidationContextException;
 
 public class FieldActiveModel extends BaseModel<Field> implements Field {
-    public FieldActiveModel(User owner, String name, int width, int height) {
+    public FieldActiveModel(String name, int width, int height) {
+        validation(name, width, height);
+        this.modelProperty = new SimpleProperty<>(new FieldEntity(name, width, height));
+    }
+
+    public FieldActiveModel(Field field) {
+        validation(field.getName(), field.getWidth(), field.getHeight());
+        this.modelProperty = new SimpleProperty<>(field);
+    }
+
+    private static void validation(String name, int width, int height) {
         ValidationContext context = ValidationContextBuilder.create()
                 .validate("fieldName", name)
                 .validate("fieldSize", width)
@@ -21,8 +30,6 @@ public class FieldActiveModel extends BaseModel<Field> implements Field {
         if (!context.isValid()) {
             throw new ValidationContextException(context.getErrorMessages());
         }
-
-        modelProperty = new SimpleProperty<>(new FieldEntity(owner, name, width, height));
     }
 
     @Override
@@ -70,10 +77,5 @@ public class FieldActiveModel extends BaseModel<Field> implements Field {
     @Override
     public void setName(String name) {
         modelProperty.get().setName(name);
-    }
-
-    @Override
-    public User getOwner() {
-        return modelProperty.get().getOwner();
     }
 }

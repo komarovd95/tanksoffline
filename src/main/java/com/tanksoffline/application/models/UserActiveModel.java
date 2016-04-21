@@ -14,16 +14,15 @@ import java.util.List;
 
 public class UserActiveModel extends BaseModel<User> implements User {
     public UserActiveModel(String login, String password, UserType userType) {
-        this(login, password);
+        validation(login, password);
         this.modelProperty = new SimpleProperty<>(new UserEntity(login, password, userType));
     }
 
     public UserActiveModel(User user) {
-        this(user.getLogin(), user.getPassword());
         this.modelProperty = new SimpleProperty<>(user);
     }
 
-    private UserActiveModel(String login, String password) {
+    private static void validation(String login, String password) {
         ValidationContext context = ValidationContextBuilder.create()
                 .validate("login", login)
                 .validate("password", password)
@@ -83,6 +82,19 @@ public class UserActiveModel extends BaseModel<User> implements User {
     @Override
     public boolean isManager() {
         return modelProperty.get().isManager();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o != null && o instanceof User) {
+            User user = (User) o;
+            return this.getLogin().equals(user.getLogin()) && this.getPassword().equals(user.getPassword())
+                    && (this.isManager() == user.isManager());
+        } else {
+            return false;
+        }
     }
 
     public static UserActiveModel signIn(String login, String password) {

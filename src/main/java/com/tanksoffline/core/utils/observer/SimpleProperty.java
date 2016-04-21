@@ -1,14 +1,14 @@
 package com.tanksoffline.core.utils.observer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SimpleProperty<T> implements Property<T> {
     private T item;
     private List<Observer<? super T>> observers;
 
     public SimpleProperty() {
-        observers = new ArrayList<>();
+        observers = new CopyOnWriteArrayList<>();
     }
 
     public SimpleProperty(T initialValue) {

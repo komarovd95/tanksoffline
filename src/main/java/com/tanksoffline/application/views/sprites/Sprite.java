@@ -1,12 +1,15 @@
 package com.tanksoffline.application.views.sprites;
 
-import javafx.geometry.Bounds;
-import javafx.scene.image.Image;
+import com.tanksoffline.core.utils.observer.Property;
+import javafx.scene.Node;
 
 public interface Sprite {
-    double getMoveSpeed();
-    double getRotatingSpeed();
+    Node getNode();
+    double getCellSize();
+    Property<Boolean> readyProperty();
 
-    Image getImage();
-    Bounds update(double timeElapsed);
+    default boolean isReady() {
+        return readyProperty().get();
+    }
+
 }

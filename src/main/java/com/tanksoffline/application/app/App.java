@@ -1,8 +1,9 @@
 package com.tanksoffline.application.app;
 
 import com.tanksoffline.application.configuration.ApplicationServiceLocatorConfiguration;
+import com.tanksoffline.application.controllers.NavigationController;
 import com.tanksoffline.application.data.User;
-import com.tanksoffline.application.models.core.game.GameModel;
+import com.tanksoffline.application.models.game.GameModel;
 import com.tanksoffline.application.services.LoginService;
 import com.tanksoffline.application.utils.Navigation;
 import com.tanksoffline.core.services.DataService;
@@ -36,6 +37,10 @@ public class App extends Application {
         return ServiceLocator.getInstance().getService(DIService.class).getComponent(c);
     }
 
+    public static <T> T getComponent(String componentName) {
+        return ServiceLocator.getInstance().getService(DIService.class).getComponent(componentName);
+    }
+
     public static <T extends Service> T getService(Class<T> c) {
         return ServiceLocator.getInstance().getService(c);
     }
@@ -48,8 +53,8 @@ public class App extends Application {
     public App() {
         instance = this;
 
-        applicationController = App.getComponent(ApplicationController.class);
-        navigationController = App.getComponent(Navigation.class);
+        applicationController = new ApplicationController();
+        navigationController = new NavigationController();
     }
 
     @Override
@@ -129,13 +134,14 @@ public class App extends Application {
         return navigationController;
     }
 
-
     public static void main(String[] args) {
-        try {
-            ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
-            launch(args);
-        } catch (Throwable t) {
-            System.err.println(t.getMessage());
-        }
+//        try {
+//
+//        } catch (Throwable t) {
+//            System.err.println(t.getMessage());
+//            throw t;
+//        }
+        ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
+        launch(args);
     }
 }

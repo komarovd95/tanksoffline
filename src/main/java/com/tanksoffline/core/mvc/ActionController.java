@@ -5,14 +5,13 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public interface ActionController<T> {
-    Callable<T> onCreate(Map<String, Object> values);
-    Callable<T> onFind(Map<String, Object> values);
-    Callable<T> onUpdate(Map<String, Object> values);
-    Callable<T> onRemove();
+    Callable<T> create(Map<String, Object> values);
+    Callable<? extends T> findBy(Map<String, Object> values);
+    Callable<T> update(Map<String, Object> values);
+    Callable<T> remove();
 
-    Callable<T> onFindOne(Object id);
-    Callable<List<T>> onFindAll();
+    Callable<List<? extends T>> list();
 
-    Callable<T> onConstruct();
-    Callable<T> onDestroy();
+    Callable<T> construct(T t);
+    Callable<T> destroy();
 }

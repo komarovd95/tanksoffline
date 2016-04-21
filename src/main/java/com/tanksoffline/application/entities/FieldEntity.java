@@ -2,20 +2,14 @@ package com.tanksoffline.application.entities;
 
 import com.tanksoffline.application.data.Field;
 import com.tanksoffline.application.data.FieldCell;
-import com.tanksoffline.application.data.User;
 import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.core.data.DomainObject;
 
 public class FieldEntity extends DomainObject implements Field {
-    private User owner;
     private FieldCell[][] fieldCells;
     private String name;
 
-    public FieldEntity(User owner, String name, int width, int height) {
-        if (!owner.isManager()) {
-            throw new RuntimeException("Only manager can be an owner of field");
-        }
-        this.owner = owner;
+    public FieldEntity(String name, int width, int height) {
         this.name = name;
         fieldCells = new FieldCell[width][];
         for (int i = 0; i < fieldCells.length; i++) {
@@ -39,17 +33,12 @@ public class FieldEntity extends DomainObject implements Field {
         }
     }
 
-    public FieldEntity(UserEntity owner, String name) {
-        this(owner, name, 10, 10);
+    public FieldEntity(String name) {
+        this(name, 10, 10);
     }
 
     public FieldEntity() {
         fieldCells = new FieldCell[0][0];
-    }
-
-    @Override
-    public User getOwner() {
-        return owner;
     }
 
     @Override

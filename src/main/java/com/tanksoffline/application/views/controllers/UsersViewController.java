@@ -117,13 +117,14 @@ public class UsersViewController implements Initializable, PartialView {
                 .ifPresent(response -> {
                     try {
                         ActionController<User> actionController = new UserActionController(currentUserEntity);
-                        actionController.onRemove().call();
-                        if (app.getLoggedUserProperty().get() == currentUserEntity) {
-                            actionController.onDestroy();
+                        actionController.remove().call();
+                        User u = app.getLoggedUserProperty().get();
+                        if (app.getLoggedUserProperty().get().equals(currentUserEntity)) {
+                            actionController.destroy().call();
                         }
                         userEntities.remove(currentUserEntity);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 });
     }
@@ -132,6 +133,6 @@ public class UsersViewController implements Initializable, PartialView {
         UserEntity currentUserEntity = table.getSelectionModel().selectedItemProperty().get();
         app.getApplicationController().onUserChange(currentUserEntity, () ->
                 userEntities.set(table.getSelectionModel().getSelectedIndex(),
-                        (UserEntity) new UserSearch().findOne(currentUserEntity.getId())));
+                        new UserSearch().findOne(currentUserEntity.getId())));
     }
 }

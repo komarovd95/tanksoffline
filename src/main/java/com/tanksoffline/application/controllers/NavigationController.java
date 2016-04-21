@@ -5,17 +5,13 @@ import com.tanksoffline.application.utils.ApplicationStage;
 import com.tanksoffline.application.utils.Navigation;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 public class NavigationController implements Navigation {
     private Stack<ApplicationStage> stageStack;
-    private Queue<Object> messagesQueue;
 
     public NavigationController() {
         this.stageStack = new Stack<>();
-        this.messagesQueue = new LinkedList<>();
     }
 
     @Override
@@ -36,16 +32,5 @@ public class NavigationController implements Navigation {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getNavigationInfo() {
-        return (T) messagesQueue.poll();
-    }
-
-    @Override
-    public <T> void setNavigationInfo(T info) {
-        messagesQueue.offer(info);
     }
 }

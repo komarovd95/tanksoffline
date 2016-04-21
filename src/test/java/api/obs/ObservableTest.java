@@ -14,27 +14,27 @@ import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 public class ObservableTest {
-    private Observable<String> observableString;
-    private Observer<String> observer;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        observableString = new SimpleProperty<>();
-
-        observer = (Observer<String>) PowerMockito.mock(Observer.class);
-        observableString.addObserver(observer);
-    }
-
-    @Test
-    public void testGet() throws Exception {
-        assertNull(observableString.get());
-    }
-
-    @Test
-    public void testSet() throws Exception {
-        observableString.set("Hello");
-        assertEquals("Hello", observableString.get());
-        Mockito.verify(observer).observe(observableString, null, "Hello");
-    }
+//    private Observable<String> observableString;
+//    private Observer<String> observer;
+//
+//    @Before
+//    @SuppressWarnings("unchecked")
+//    public void setUp() throws Exception {
+//        observableString = new SimpleProperty<>();
+//
+//        observer = (Observer<String>) PowerMockito.mock(Observer.class);
+//        observableString.addObserver(observer);
+//    }
+//
+//    @Test
+//    public void testGet() throws Exception {
+//        assertNull(observableString.get());
+//    }
+//
+//    @Test
+//    public void testSet() throws Exception {
+//        observableString.set("Hello");
+//        assertEquals("Hello", observableString.get());
+//        Mockito.verify(observer).observe(observableString, null, "Hello");
+//    }
 }

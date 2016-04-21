@@ -1,6 +1,7 @@
 package com.tanksoffline.application.controllers;
 
 import com.tanksoffline.application.data.User;
+import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.entities.search.UserSearch;
 import com.tanksoffline.application.models.UserActiveModel;
 import com.tanksoffline.application.services.LoginService;
@@ -15,28 +16,31 @@ import java.util.concurrent.Callable;
 public class UserActionController implements ActionController<User> {
     private static final LoginService loginService = ServiceLocator.getInstance().getService(LoginService.class);
 
-    private Search<User> userSearch;
+    private Search<UserEntity> userSearch;
     private UserActiveModel userActiveModel;
 
-    public UserActionController() {}
+    public UserActionController() {
+        userSearch = new UserSearch();
+    }
 
     public UserActionController(User user) {
+        this();
         userActiveModel = new UserActiveModel(user);
     }
 
     @Override
-    public Callable<User> onCreate(Map<String, Object> values) {
+    public Callable<User> create(Map<String, Object> values) {
         return () -> UserActiveModel.signUp((String) values.get("login"), (String) values.get("password"),
                 ((boolean) values.get("userType")) ? User.UserType.MANAGER : User.UserType.USER);
     }
 
     @Override
-    public Callable<User> onFind(Map<String, Object> values) {
+    public Callable<User> findBy(Map<String, Object> values) {
         return () -> UserActiveModel.signIn((String) values.get("login"), (String) values.get("password"));
     }
 
     @Override
-    public Callable<User> onUpdate(Map<String, Object> values) {
+    public Callable<User> update(Map<String, Object> values) {
         return () -> {
             values.forEach((k, v) -> {
                 switch (k) {
@@ -56,36 +60,32 @@ public class UserActionController implements ActionController<User> {
     }
 
     @Override
-    public Callable<User> onRemove() {
+    public Callable<User> remove() {
         return () -> userActiveModel.remove();
     }
 
     @Override
-    public Callable<User> onFindOne(Object id) {
-        return () -> userSearch.findOne(id);
+    public Callable<List<? extends User>> list() {
+        return () -> userSearch.findAll();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Callable<List<User>> onFindAll() {
-        return () -> (List<User>) userSearch.findAll();
-    }
-
-    @Override
-    public Callable<User> onDestroy() {
+    public Callable<User> construct(User user) {
         return () -> {
-            User user = userActiveModel;
-            userActiveModel = null;
-            if (user == loginService.getLoggedUserProperty().get()) {
-                loginService.signOut();
-            }
-            return user;
+            this.userActiveModel = new UserActiveModel(user);
+            return userActiveModel;
         };
     }
 
     @Override
-    public Callable<User> onConstruct() {
-        this.userSearch = new UserSearch();
-        return () -> userActiveModel;
+    public Callable<User> destroy() {
+        return () -> {
+            User user = userActiveModel;
+            userActiveModel = null;
+            if (user.equals(loginService.getLoggedUserProperty().get())) {
+                loginService.signOut();
+            }
+            return user;
+        };
     }
 }

@@ -1,33 +1,30 @@
 package com.tanksoffline.application.models;
 
 import com.tanksoffline.application.utils.Direction;
-import com.tanksoffline.application.models.core.game.TankModel;
+import com.tanksoffline.application.models.game.TankModel;
 import com.tanksoffline.core.utils.observer.Observable;
+import com.tanksoffline.core.utils.observer.Property;
 import com.tanksoffline.core.utils.observer.SimpleProperty;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class TankModelImpl implements TankModel {
-    private Observable<Direction> currentDirection;
-    private Observable<Integer> xPosition;
-    private Observable<Integer> yPosition;
-    private Observable<Integer> health;
-    private AtomicInteger moveCounter;
+    private Property<Direction> directionProperty;
+    private Property<Integer> xPosition;
+    private Property<Integer> yPosition;
+    private Property<Integer> health;
     private int damage;
     private String iconUrl;
 
-    private Observable<Boolean> movingProperty;
-    private Observable<Boolean> rotatingProperty;
+    private Property<Boolean> movingProperty;
+    private Property<Boolean> rotatingProperty;
 
     public TankModelImpl(int x, int y, int initHealth, int damage, String iconUrl) {
         this.xPosition = new SimpleProperty<>(x);
         this.yPosition = new SimpleProperty<>(y);
-        this.currentDirection = new SimpleProperty<>();
+        this.directionProperty = new SimpleProperty<>();
         this.health = new SimpleProperty<>(initHealth);
         this.damage = damage;
         this.iconUrl = iconUrl;
         this.movingProperty = new SimpleProperty<>(false);
-        this.moveCounter = new AtomicInteger();
 
         this.rotatingProperty = new SimpleProperty<>(false);
 
@@ -35,17 +32,17 @@ public class TankModelImpl implements TankModel {
 
     @Override
     public Observable<Direction> getDirectionProperty() {
-        return currentDirection;
+        return directionProperty;
     }
 
     @Override
     public Direction getDirection() {
-        return currentDirection.get();
+        return directionProperty.get();
     }
 
     @Override
     public void setDirection(Direction direction) {
-        this.currentDirection.set(direction);
+        this.directionProperty.set(direction);
         this.rotatingProperty.set(true);
     }
 

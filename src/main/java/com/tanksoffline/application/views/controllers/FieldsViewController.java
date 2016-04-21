@@ -2,6 +2,7 @@ package com.tanksoffline.application.views.controllers;
 
 import com.tanksoffline.application.app.App;
 import com.tanksoffline.application.data.Field;
+import com.tanksoffline.application.entities.search.FieldSearch;
 import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.application.controllers.FieldActionController;
 import com.tanksoffline.application.utils.Direction;
@@ -33,11 +34,12 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class FieldsViewController implements FieldView {
     private App app;
-    private ActionController<Field> actionController;
     private ObservableList<FieldEntity> fields;
     private Renderer<FieldEntity> renderer;
     private ObjectProperty<Pair<Integer, Integer>> selectedCell;
@@ -77,7 +79,6 @@ public class FieldsViewController implements FieldView {
 
     public FieldsViewController() {
         this.app = App.getInstance();
-        this.actionController = new FieldActionController();
         this.selectedCell = new SimpleObjectProperty<>();
     }
 
@@ -91,7 +92,10 @@ public class FieldsViewController implements FieldView {
         backBtn.setOnAction(event -> FieldsViewController.this.onBackClick());
 
         TableDataBuilder<FieldEntity> dataBuilder = new TableDataBuilder<>();
-        dataBuilder.setBuiltData(actionController.onFindAll());
+        dataBuilder.setBuiltData(() -> {
+            List<? extends Field> fields = new FieldSearch().findAll();
+            return fields.stream().map(f -> (FieldEntity) f).collect(Collectors.toList());
+        });
 
         fieldList.setItems(dataBuilder.build());
         fieldList.setPlaceholder(new Label("Нет данных"));
@@ -183,7 +187,7 @@ public class FieldsViewController implements FieldView {
     @Override
     public void onCreateClick() {
         app.getApplicationController().onFieldCreate(() -> {
-            fields.add(app.getNavigation().getNavigationInfo());
+            fields.add(App.getComponent("new_field"));
             fieldList.getSelectionModel().select(fields.size() - 1);
         });
     }
@@ -195,11 +199,11 @@ public class FieldsViewController implements FieldView {
 
     @Override
     public void onSaveClick() {
-        Service<FieldEntity> saveService = new Service<FieldEntity>() {
+        Service<Field> saveService = new Service<Field>() {
             @Override
-            protected Task<FieldEntity> createTask() {
-                return new TaskFactory<>(
-                        actionController.onUpdate(getCurrentField(), null)).create();
+            protected Task<Field> createTask() {
+                ActionController<Field> actionController = new FieldActionController(getCurrentField());
+                return new TaskFactory<>(actionController.create(null)).create();
             }
 
             @Override
@@ -223,17 +227,18 @@ public class FieldsViewController implements FieldView {
 
     @Override
     public void onRemoveClick() {
-        Service<FieldEntity> removeService = new Service<FieldEntity>() {
+        Service<Field> removeService = new Service<Field>() {
             @Override
-            protected Task<FieldEntity> createTask() {
+            protected Task<Field> createTask() {
                 ActionController<Field> actionController = new FieldActionController(getCurrentField());
-                return new TaskFactory<>(actionController.onRemove()).create();
+                return new TaskFactory<>(actionController.remove()).create();
             }
 
             @Override
             protected void succeeded() {
                 selectedCell.set(null);
-                fields.remove(this.getValue());
+                FieldEntity entity = (FieldEntity) this.getValue();
+                fields.remove(entity);
             }
         };
 

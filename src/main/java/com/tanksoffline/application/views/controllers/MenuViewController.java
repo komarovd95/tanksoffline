@@ -45,7 +45,7 @@ public class MenuViewController implements Initializable {
         new Service<User>() {
             @Override
             protected Task<User> createTask() {
-                return new TaskFactory<>(actionController.onDestroy()).create();
+                return new TaskFactory<>(actionController.destroy()).create();
             }
         }.start();
     }
@@ -61,5 +61,9 @@ public class MenuViewController implements Initializable {
 
     public void onStartGameClick() {
         app.getApplicationController().onChooseFieldView();
+    }
+
+    public void onMatchesClick() {
+        app.getApplicationController().onMatchesClick();
     }
 }

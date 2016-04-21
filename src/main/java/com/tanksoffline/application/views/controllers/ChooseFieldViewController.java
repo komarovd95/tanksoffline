@@ -1,6 +1,7 @@
 package com.tanksoffline.application.views.controllers;
 
 import com.tanksoffline.application.app.App;
+import com.tanksoffline.application.data.Field;
 import com.tanksoffline.core.mvc.ActionController;
 import com.tanksoffline.application.controllers.FieldActionController;
 import com.tanksoffline.application.entities.FieldEntity;
@@ -25,10 +26,12 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ChooseFieldViewController implements FieldView {
-    private ActionController<FieldEntity> actionController;
+    private ActionController<Field> actionController;
     private Renderer<FieldEntity> fieldRenderer;
     private ObjectProperty<Pair<Integer, Integer>> playerSpawnCell;
     private ObjectProperty<Pair<Integer, Integer>> enemySpawnCell;
@@ -89,7 +92,10 @@ public class ChooseFieldViewController implements FieldView {
         backBtn.setOnAction(event -> ChooseFieldViewController.this.onBackClick());
 
         TableDataBuilder<FieldEntity> dataBuilder = new TableDataBuilder<>();
-        dataBuilder.setBuiltData(actionController.onFindAll());
+        dataBuilder.setBuiltData(() -> {
+            List<? extends Field> fields = actionController.list().call();
+            return fields.stream().map(f -> (FieldEntity) f).collect(Collectors.toList());
+        });
 
         fieldList.setItems(dataBuilder.build());
 

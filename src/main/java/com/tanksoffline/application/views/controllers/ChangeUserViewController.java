@@ -47,7 +47,7 @@ public class ChangeUserViewController implements Initializable {
                     Map<String, Object> params = new HashMap<>();
                     params.put("password", passToken);
                     params.put("userType", isManager.isSelected());
-                    actionController.onUpdate(params).call();
+                    actionController.update(params).call();
                     return null;
                 }).create();
             }

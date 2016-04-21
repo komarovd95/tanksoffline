@@ -1,4 +1,4 @@
-package com.tanksoffline.application.models.core.game;
+package com.tanksoffline.application.models.game;
 
 import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.core.utils.observer.Observable;
@@ -24,6 +24,7 @@ public interface TankModel extends Movable, Rotatable {
     String getIcon();
 
     Bomb shoot();
+
     void dealDamage(int dealtDamage);
 
     class Bomb implements Movable {

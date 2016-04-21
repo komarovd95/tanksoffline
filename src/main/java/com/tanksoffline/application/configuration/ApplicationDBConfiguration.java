@@ -5,7 +5,7 @@ import com.tanksoffline.core.services.configuration.ServiceConfiguration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ApplicationDbConfiguration implements ServiceConfiguration<String, String> {
+public class ApplicationDBConfiguration implements ServiceConfiguration<String, String> {
     @Override
     public Map<String, String> configure() {
         Map<String, String> configuration = new HashMap<>();

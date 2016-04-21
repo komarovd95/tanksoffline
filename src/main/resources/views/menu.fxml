@@ -35,7 +35,7 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Матчи">
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);" text="Матчи" onAction="#onMatchesClick">
                <VBox.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </VBox.margin>

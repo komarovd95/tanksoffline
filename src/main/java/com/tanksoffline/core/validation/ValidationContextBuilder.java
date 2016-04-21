@@ -16,6 +16,7 @@ public class ValidationContextBuilder implements Builder<ValidationContext> {
 
     private ValidationContextBuilder() {
         this.errorContext = new HashMap<>();
+        this.isValid = true;
     }
 
     public static ValidationContextBuilder create() {

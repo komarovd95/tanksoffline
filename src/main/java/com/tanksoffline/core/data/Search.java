@@ -6,10 +6,10 @@ import java.util.Map;
 
 public interface Search<T> {
     T findOne(Object id);
-    List<? extends T> findAll();
-    List<? extends T> findBy(String query, Object... args);
-    List<? extends T> findBy(Map<String, Object> ags);
-    default List<? extends T> findBy(String arg, String value) {
+    List<T> findAll();
+    List<T> findBy(String query, Object... args);
+    List<T> findBy(Map<String, Object> args);
+    default List<T> findBy(String arg, String value) {
         return findBy(Collections.singletonMap(arg, value));
     }
 }

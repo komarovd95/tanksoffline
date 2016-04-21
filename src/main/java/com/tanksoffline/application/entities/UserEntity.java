@@ -1,12 +1,16 @@
 package com.tanksoffline.application.entities;
 
+import com.tanksoffline.application.data.Match;
 import com.tanksoffline.application.data.User;
 import com.tanksoffline.core.data.DomainObject;
+
+import java.util.List;
 
 public class UserEntity extends DomainObject implements User {
     private String login;
     private String password;
     private UserType userType;
+    private List<MatchEntity> matches;
 
     public UserEntity() {}
 
@@ -53,5 +57,24 @@ public class UserEntity extends DomainObject implements User {
     @Override
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o != null && o instanceof User) {
+            User user = (User) o;
+            return this.getLogin().equals(user.getLogin()) && this.getPassword().equals(user.getPassword())
+                    && (this.isManager() == user.isManager());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return (getLogin() == null ? 0 : getLogin().hashCode()) * 31
+                + (getPassword() == null ? 0 : getLogin().hashCode()) * 31 + (isManager() ? 0 : 31);
     }
 }

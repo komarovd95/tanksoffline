@@ -1,4 +1,4 @@
-package com.tanksoffline.application.models.core.game;
+package com.tanksoffline.application.models.game;
 
 import com.tanksoffline.core.utils.observer.Observable;
 

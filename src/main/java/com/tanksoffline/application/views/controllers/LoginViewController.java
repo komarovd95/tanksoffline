@@ -17,10 +17,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.PersistenceException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 
 public class LoginViewController implements Initializable {
     private ActionController<User> actionController;
@@ -74,11 +76,12 @@ public class LoginViewController implements Initializable {
         loginServiceFactory = new SingletonFactory<>(() ->
                 new Service<User>() {
                     @Override
+                    @SuppressWarnings("unchecked")
                     protected Task<User> createTask() {
                         Map<String, Object> params = new HashMap<>();
                         params.put("login", loginValue.getText().trim());
                         params.put("password", passValue.getText().trim());
-                        return new TaskFactory<>(actionController.onFind(params)).create();
+                        return new TaskFactory<>((Callable<User>) actionController.findBy(params)).create();
                     }
 
                     @Override
@@ -117,9 +120,9 @@ public class LoginViewController implements Initializable {
                     protected Task<User> createTask() {
                         Map<String, Object> params = new HashMap<>();
                         params.put("login", loginValue.getText().trim());
-                        params.put("password", passValue.getText().trim());
+                        params.put("password", passValue.getText());
                         params.put("userType", asManager.isSelected());
-                        return new TaskFactory<>(actionController.onCreate(params)).create();
+                        return new TaskFactory<>(actionController.create(params)).create();
                     }
 
                     @Override
@@ -128,7 +131,7 @@ public class LoginViewController implements Initializable {
                         Throwable t = this.exceptionProperty().get();
                         if (t instanceof ValidationContextException) {
                             fireError((ValidationContextException) t);
-                        } else if (t.getCause() instanceof ConstraintViolationException) {
+                        } else if (t.getCause() instanceof PersistenceException) {
                             setError(loginLabel, "Логин уже существует");
                         } else {
                             throw new RuntimeException(t);

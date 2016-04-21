@@ -27,9 +27,6 @@ public class DIService implements Service {
     }
 
     public void addComponent(String componentName, Factory<?> componentProducer) {
-        if (components.containsKey(componentName)) {
-            throw new IllegalArgumentException("Components pool already has component with name " + componentName);
-        }
         components.put(componentName, componentProducer);
     }
 

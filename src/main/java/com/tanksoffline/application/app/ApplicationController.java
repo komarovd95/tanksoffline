@@ -3,9 +3,8 @@ package com.tanksoffline.application.app;
 import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.models.GameModelImpl;
-import com.tanksoffline.application.models.core.game.GameModel;
+import com.tanksoffline.application.models.game.GameModel;
 import com.tanksoffline.application.utils.ResourceFactory;
-import com.tanksoffline.application.utils.TaskFactory;
 import com.tanksoffline.application.views.controllers.ChangeUserViewController;
 import com.tanksoffline.application.views.controllers.ChooseFieldViewController;
 import com.tanksoffline.application.views.controllers.FieldsViewController;
@@ -39,10 +38,18 @@ public class ApplicationController {
         Service<Void> servicesLoader = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
-                return new TaskFactory<Void>(() -> {
-                    ServiceLocator.getInstance().loadServices();
-                    return null;
-                }).create();
+//                return new TaskFactory<Void>(() -> {
+//                    ServiceLocator.getInstance().loadServices();
+//                    System.out.println("Cancelled");
+//                    return null;
+//                }).create();
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        ServiceLocator.getInstance().loadServices();
+                        return null;
+                    }
+                };
             }
         };
         servicesLoader.setOnSucceeded(event -> {
@@ -54,10 +61,10 @@ public class ApplicationController {
             }
         });
 
+        servicesLoader.start();
         splashStage.setScene(new Scene(splashRoot));
         splashStage.show();
         splashStage.centerOnScreen();
-        servicesLoader.start();
     }
 
     public void onLoad() throws Exception {
@@ -117,7 +124,7 @@ public class ApplicationController {
         changeStage.setResizable(false);
 
         // TODO
-        app.getNavigation().setNavigationInfo(currentUserEntity);
+//        app.getNavigation().setNavigationInfo(currentUserEntity);
 
         FXMLLoader loader = new ResourceFactory("/views/change_user.fxml").getLoader();
         loader.setController(new ChangeUserViewController(currentUserEntity));
@@ -190,5 +197,11 @@ public class ApplicationController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void onMatchesClick() {
+        Parent page = new ResourceFactory("/views/matches.fxml").create();
+        app.getNavigation().forward("MatchesView");
+        app.setContent(page, null, true);
     }
 }

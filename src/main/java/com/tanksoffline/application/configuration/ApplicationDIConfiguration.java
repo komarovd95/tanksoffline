@@ -28,20 +28,6 @@ public class ApplicationDIConfiguration implements ServiceConfiguration<String, 
         configurationMap.put("NavigationComponent", navigationFactory);
 
 
-
-//        configurationMap.put(UserModel.class.getName(), new SingletonFactory<>(
-//                new ProxyFactory<>(UserModel.class,
-//                        validationService.createValidationHandler(new UserModelImpl())
-//                )
-//        ));
-//
-//        configurationMap.put(FieldModel.class.getName(), new SingletonFactory<>(
-//                new ProxyFactory<>(FieldModel.class,
-//                        validationService.createValidationHandler(new FieldModelImpl())
-//                )
-//        ));
-
-
         return configurationMap;
     }
 }

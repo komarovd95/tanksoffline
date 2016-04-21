@@ -10,12 +10,12 @@ import static org.junit.Assert.assertNotNull;
 
 public class ProxyHDS {
 
-    @Test
-    public void testProxy() {
-        ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
-        DataService dataService = ServiceLocator.getInstance().getService(HibernateDataService.class);
-        dataService.start();
-        dataService.save(new UserEntity("Dave", "pass123"));
-        assertNotNull(dataService);
-    }
+//    @Test
+//    public void testProxy() {
+//        ServiceLocator.bind(new ApplicationServiceLocatorConfiguration());
+//        DataService dataService = ServiceLocator.getInstance().getService(HibernateDataService.class);
+//        dataService.start();
+//        dataService.save(new UserEntity("Dave", "pass123"));
+//        assertNotNull(dataService);
+//    }
 }

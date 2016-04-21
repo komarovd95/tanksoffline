@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -7,14 +8,14 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Canvas fx:id="canvas" height="600.0" width="600.0" StackPane.alignment="TOP_CENTER">
-         <StackPane.margin>
-            <Insets bottom="40.0" top="40.0" />
-         </StackPane.margin>
-      </Canvas>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0">
+         <children>
+            <Group fx:id="group" layoutX="601.0" layoutY="351.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" StackPane.alignment="CENTER">
+      </Group>
+         </children>
+      </AnchorPane>
       <Button fx:id="backBtn" mnemonicParsing="false" text="Закончить" StackPane.alignment="BOTTOM_CENTER">
          <StackPane.margin>
             <Insets bottom="40.0" />
