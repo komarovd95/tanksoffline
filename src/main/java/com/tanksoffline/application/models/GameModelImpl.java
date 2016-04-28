@@ -21,7 +21,7 @@ public class GameModelImpl implements GameModel {
         this.playerModel = new TankModelImpl(x1, y1, 100, 10, "/images/player.png");
         setStartDirection(playerModel);
 
-        this.enemyModel = new TankModelImpl(x2, y2, 100, 20, "/images/enemy.png");
+        this.enemyModel = new TankModelImpl(x2, y2, 200, 20, "/images/enemy.png");
         setStartDirection(enemyModel);
 
         this.playerModel.getHealthProperty().addObserver((observable, oldValue, newValue) -> {

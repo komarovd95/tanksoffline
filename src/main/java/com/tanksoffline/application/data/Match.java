@@ -3,6 +3,7 @@ package com.tanksoffline.application.data;
 public interface Match {
     User getUser();
     Result getResult();
+    Field getField();
 
     enum Result {
         WIN("ВЫИГРЫШ"), LOSE("ПРОИГРЫШ");

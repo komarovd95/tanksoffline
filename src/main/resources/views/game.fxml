@@ -29,7 +29,7 @@
             <Insets left="40.0" />
          </StackPane.margin>
          <font>
-            <Font size="26.0" />
+            <Font size="20.0" />
          </font>
       </Label>
       <Label fx:id="enemyHpLabel" prefHeight="79.0" prefWidth="141.0" text="Противник 100" textAlignment="CENTER" wrapText="true" StackPane.alignment="CENTER_RIGHT">
@@ -37,7 +37,7 @@
             <Insets right="40.0" />
          </StackPane.margin>
          <font>
-            <Font size="26.0" />
+            <Font size="20.0" />
          </font>
       </Label>
    </children>

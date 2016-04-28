@@ -37,6 +37,7 @@
                     <columns>
                       <TableColumn fx:id="idColumn" editable="false" prefWidth="75.0" text="ID" />
                       <TableColumn fx:id="nameColumn" editable="false" prefWidth="75.0" text="Имя пользователя" />
+                      <TableColumn fx:id="fieldColumn" editable="false" prefWidth="75.0" text="Поле" />
                       <TableColumn fx:id="dateColumn" editable="false" prefWidth="95.0" text="Дата " />
                       <TableColumn fx:id="resultColumn" editable="false" prefWidth="75.0" text="Результат" />
                     </columns>

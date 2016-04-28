@@ -53,7 +53,9 @@ public class ServiceLocator {
                 } else {
                     System.out.println("Service loading was started " + serviceClass);
                     service = factory.create();
-                    service.start();
+                    if (!service.isStarted()) {
+                        service.start();
+                    }
                     serviceMap.put(serviceClass, service);
                     System.out.println("Service was started " + serviceClass);
                 }

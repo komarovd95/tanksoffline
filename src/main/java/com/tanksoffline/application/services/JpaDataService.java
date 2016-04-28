@@ -19,6 +19,7 @@ public class JpaDataService implements DataService {
     private String unitName;
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+    private boolean isStarted;
 
     public JpaDataService(String unitName, ServiceConfiguration<String, String> configuration) {
         this.configuration = configuration;
@@ -111,6 +112,7 @@ public class JpaDataService implements DataService {
     public void start() {
         entityManagerFactory = Persistence.createEntityManagerFactory(unitName, configuration.configure());
         entityManager = entityManagerFactory.createEntityManager();
+        isStarted = true;
     }
 
     @Override
@@ -121,6 +123,12 @@ public class JpaDataService implements DataService {
         if (entityManagerFactory.isOpen()) {
             entityManagerFactory.close();
         }
+        isStarted = false;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return isStarted;
     }
 
     private <T> T doWithTransaction(Function<EntityManager, T> work) {

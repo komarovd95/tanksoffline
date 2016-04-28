@@ -9,11 +9,6 @@ public abstract class BaseModel<T> implements ActiveModel<T> {
     protected static final DataService dataService = ServiceLocator.getInstance().getService(DataService.class);
 
     protected Property<T> modelProperty;
-//    private Class<? extends T> entityClass;
-
-//    public BaseModel(Class<? extends T> entityClass) {
-//        this.entityClass = entityClass;
-//    }
 
     @Override
     public T save() {

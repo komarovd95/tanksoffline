@@ -21,4 +21,6 @@ dependencies {
     compile group: 'javax.el', name: 'javax.el-api', version: '2.2.4'
     compile group: 'org.glassfish.web', name: 'javax.el', version: '2.2.4'
     compile group: 'org.hibernate', name: 'hibernate-validator-cdi', version: '5.2.4.Final'
+    compile 'org.postgresql:postgresql:9.4.1208'
+
 }

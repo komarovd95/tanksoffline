@@ -9,6 +9,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
@@ -64,6 +65,17 @@ public class MenuViewController implements Initializable {
     }
 
     public void onMatchesClick() {
-        app.getApplicationController().onMatchesClick();
+        app.getApplicationController().onMatchesView();
+    }
+
+    public void onInfoClick() {
+
+        Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+        infoAlert.setTitle("О программе");
+        infoAlert.setHeaderText("Лабораторная работа по дисциплине\n\"Системное программирование\"");
+        infoAlert.setContentText("Игра \"TanksOffline\"\nВыполнили: студенты " +
+                "группы 6301Б\nКомаров Д. А. и Кузенная А. М.");
+
+        infoAlert.showAndWait();
     }
 }

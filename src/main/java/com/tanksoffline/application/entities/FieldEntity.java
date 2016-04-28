@@ -5,9 +5,12 @@ import com.tanksoffline.application.data.FieldCell;
 import com.tanksoffline.application.utils.Direction;
 import com.tanksoffline.core.data.DomainObject;
 
+import java.util.List;
+
 public class FieldEntity extends DomainObject implements Field {
     private FieldCell[][] fieldCells;
     private String name;
+    private List<FieldEntity> fields;
 
     public FieldEntity(String name, int width, int height) {
         this.name = name;

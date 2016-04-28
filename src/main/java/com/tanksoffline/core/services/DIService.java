@@ -9,6 +9,7 @@ import java.util.Map;
 public class DIService implements Service {
     private ServiceConfiguration<String, Factory<?>> configuration;
     private Map<String, Factory<?>> components;
+    private boolean isStarted;
 
     public DIService(ServiceConfiguration<String, Factory<?>> configuration) {
         this.configuration = configuration;
@@ -37,11 +38,17 @@ public class DIService implements Service {
     @Override
     public void start() {
         components = configuration.configure();
+        isStarted = true;
     }
 
     @Override
     public void shutdown() {
         components = null;
+        isStarted = false;
     }
 
+    @Override
+    public boolean isStarted() {
+        return isStarted;
+    }
 }

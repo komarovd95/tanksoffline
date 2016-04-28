@@ -123,7 +123,7 @@ public class FieldsViewController implements FieldView {
         renderer = new DefaultFieldRenderer(fieldCellBoundRenderer);
 
         fieldList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean willDisabled = newValue == null;
+            boolean willDisabled = newValue == null || !app.getLoggedUserProperty().get().isManager();
             editBtn.setDisable(willDisabled);
             removeBtn.setDisable(willDisabled);
 

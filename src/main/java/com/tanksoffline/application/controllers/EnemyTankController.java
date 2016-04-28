@@ -37,7 +37,9 @@ public class EnemyTankController extends TankController {
         Set<Vertex> targetCells = new HashSet<>();
 
         for (int x = xPos - 1; x >= 0; x--) {
-            if (gameController.couldMove(x, yPos, Direction.RIGHT) || gameController.getGameModel().getTank(x + 1, yPos) != null) {
+            if (gameController.couldMove(x, yPos, Direction.RIGHT)
+                    || (gameController.getGameModel().getTank(x + 1, yPos) != null
+                    && !gameController.getGameModel().getField().hasBorder(x, yPos, Direction.RIGHT))) {
                 targetCells.add(new Vertex(x, yPos, Direction.RIGHT));
             } else {
                 break;
@@ -45,7 +47,9 @@ public class EnemyTankController extends TankController {
         }
 
         for (int x = xPos + 1; x < field.getWidth(); x++) {
-            if (gameController.couldMove(x, yPos, Direction.LEFT) || gameController.getGameModel().getTank(x - 1, yPos) != null) {
+            if (gameController.couldMove(x, yPos, Direction.LEFT)
+                    || (gameController.getGameModel().getTank(x - 1, yPos) != null
+                    && !gameController.getGameModel().getField().hasBorder(x, yPos, Direction.LEFT))) {
                 targetCells.add(new Vertex(x, yPos, Direction.LEFT));
             } else {
                 break;
@@ -53,7 +57,9 @@ public class EnemyTankController extends TankController {
         }
 
         for (int y = yPos - 1; y >= 0; y--) {
-            if (gameController.couldMove(xPos, y, Direction.BOTTOM) || gameController.getGameModel().getTank(xPos, y + 1) != null)  {
+            if (gameController.couldMove(xPos, y, Direction.BOTTOM)
+                    || (gameController.getGameModel().getTank(xPos, y + 1) != null
+                    && !gameController.getGameModel().getField().hasBorder(xPos, y, Direction.BOTTOM))) {
                 targetCells.add(new Vertex(xPos, y, Direction.BOTTOM));
             } else {
                 break;
@@ -61,7 +67,9 @@ public class EnemyTankController extends TankController {
         }
 
         for (int y = yPos + 1; y < field.getHeight(); y++) {
-            if (gameController.couldMove(xPos, y, Direction.TOP) || gameController.getGameModel().getTank(xPos, y - 1) != null)  {
+            if (gameController.couldMove(xPos, y, Direction.TOP)
+                    || (gameController.getGameModel().getTank(xPos, y + 1) != null
+                    && !gameController.getGameModel().getField().hasBorder(xPos, y, Direction.TOP))) {
                 targetCells.add(new Vertex(xPos, y, Direction.TOP));
             } else {
                 break;

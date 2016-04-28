@@ -1,11 +1,10 @@
 package com.tanksoffline.application.controllers;
 
 import com.tanksoffline.application.data.Match;
-import com.tanksoffline.application.data.User;
+import com.tanksoffline.application.entities.FieldEntity;
 import com.tanksoffline.application.entities.MatchEntity;
 import com.tanksoffline.application.entities.UserEntity;
 import com.tanksoffline.application.models.MatchActiveModel;
-import com.tanksoffline.application.models.UserActiveModel;
 import com.tanksoffline.core.data.Search;
 import com.tanksoffline.core.mvc.ActionController;
 
@@ -21,7 +20,8 @@ public class MatchActionController implements ActionController<Match> {
     public Callable<Match> create(Map<String, Object> values) {
         return () -> {
             if (matchActiveModel == null) {
-                matchActiveModel = new MatchActiveModel((UserEntity) values.get("user"), (Match.Result) values.get("result"));
+                matchActiveModel = new MatchActiveModel((UserEntity) values.get("user"), (Match.Result) values.get("result"),
+                        (FieldEntity) values.get("field"));
             }
             return matchActiveModel.save();
         };

@@ -39,13 +39,15 @@ public class ChangeUserViewController implements Initializable {
     }
 
     public void onAccept() {
-        String passToken = ("".equals(passValue.getText())) ? null : passValue.getText().trim();
         new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new TaskFactory<Void>(() -> {
                     Map<String, Object> params = new HashMap<>();
-                    params.put("password", passToken);
+                    String passToken = ("".equals(passValue.getText())) ? null : passValue.getText().trim();
+                    if (passToken != null) {
+                        params.put("password", passToken);
+                    }
                     params.put("userType", isManager.isSelected());
                     actionController.update(params).call();
                     return null;
@@ -75,6 +77,7 @@ public class ChangeUserViewController implements Initializable {
             }
         }.start();
     }
+
 
     public void onBack() {
         passValue.getScene().getWindow().getOnCloseRequest().handle(

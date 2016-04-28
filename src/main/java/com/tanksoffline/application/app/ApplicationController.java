@@ -17,6 +17,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
@@ -199,7 +201,7 @@ public class ApplicationController {
         }
     }
 
-    public void onMatchesClick() {
+    public void onMatchesView() {
         Parent page = new ResourceFactory("/views/matches.fxml").create();
         app.getNavigation().forward("MatchesView");
         app.setContent(page, null, true);

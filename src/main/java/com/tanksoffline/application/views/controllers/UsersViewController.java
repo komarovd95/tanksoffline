@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,10 +37,10 @@ public class UsersViewController implements Initializable, PartialView {
     private TableColumn<UserEntity, String> typeColumn;
 
     @FXML
-    private TableColumn<UserEntity, Date> createColumn;
+    private TableColumn<UserEntity, String> createColumn;
 
     @FXML
-    private TableColumn<UserEntity, Date> updateColumn;
+    private TableColumn<UserEntity, String> updateColumn;
 
     @FXML
     private TextField filterField;
@@ -76,11 +77,11 @@ public class UsersViewController implements Initializable, PartialView {
         passColumn.setCellValueFactory(param ->
                 new SimpleObjectProperty<>(param.getValue().getPassword()));
         typeColumn.setCellValueFactory(param ->
-                new SimpleObjectProperty<>(param.getValue().isManager() ? "Manager" : "UserEntity"));
+                new SimpleObjectProperty<>(param.getValue().isManager() ? "Manager" : "User"));
         createColumn.setCellValueFactory(param ->
-                new SimpleObjectProperty<>(param.getValue().getCreatedAt()));
+                new SimpleObjectProperty<>(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(param.getValue().getCreatedAt())));
         updateColumn.setCellValueFactory(param ->
-                new SimpleObjectProperty<>(param.getValue().getUpdatedAt()));
+                new SimpleObjectProperty<>(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(param.getValue().getCreatedAt())));
 
         TableDataBuilder<UserEntity> tableDataBuilder = new TableDataBuilder<>();
         tableDataBuilder

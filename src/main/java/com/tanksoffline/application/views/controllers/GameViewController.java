@@ -7,6 +7,7 @@ import com.tanksoffline.application.controllers.MatchActionController;
 import com.tanksoffline.application.controllers.TankController;
 import com.tanksoffline.application.data.Field;
 import com.tanksoffline.application.data.Match;
+import com.tanksoffline.application.entities.search.FieldSearch;
 import com.tanksoffline.application.entities.search.UserSearch;
 import com.tanksoffline.application.services.LoginService;
 import com.tanksoffline.application.utils.Direction;
@@ -40,7 +41,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import org.hibernate.annotations.OnDelete;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -272,6 +272,9 @@ public class GameViewController implements Initializable, PartialView {
             }
         });
 
+        playerHpLabel.setText("Вы " + player.getHealth());
+        enemyHpLabel.setText("Противник " + enemy.getHealth());
+
         playerController = new TankController(gameController, player,
                 new TransiteTankSprite(player, "/images/player.png", cellSize));
 
@@ -308,6 +311,7 @@ public class GameViewController implements Initializable, PartialView {
                                 args.put("user", new UserSearch().findBy("login", App.getService(LoginService.class)
                                         .getLoggedUserProperty().get().getLogin()).get(0));
                                 args.put("result", (newValue == player) ? Match.Result.WIN : Match.Result.LOSE);
+                                args.put("field", new FieldSearch().findBy("name", field.getName()).get(0));
                                 matchActionController = new MatchActionController();
                                 return new TaskFactory<>(matchActionController.create(args)).create();
                             }
